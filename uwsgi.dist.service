@@ -1,0 +1,16 @@
+[Unit]
+Description=uWSGI instance to serve stats.wwdt.me
+After=network.target
+
+[Service]
+User=                   ; Set User to Run Under
+Group=                  ; Set Group to Run Under
+WorkingDirectory=       ; Set Application Working WorkingDirectory
+Environment="PATH="     ; Add venv/bin to PATH
+Environment="API_ENV=production"    ; Set API environment to production
+ExecStart=              ; Set to venv/bin/uwsgi --ini uwsgi.ini
+
+[Install]
+WantedBy=multi-user.target
+logger = file:/         ; Set to location of application log file
+req-logger = file:/     ; Set to location of request log file

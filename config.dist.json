@@ -1,0 +1,14 @@
+{
+    "database": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": "",
+        "port": 3306,
+        "raise_on_warnings": true
+    },
+
+    "settings": {
+        "ga_property_code": null
+    }
+}
