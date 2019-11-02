@@ -1,0 +1,61 @@
+
+<div id="panelists">
+{% for panelist in panelists_list %}
+    <div class="panelist">
+        <h2><a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">
+        {{ panelist.name }}</a></h2>
+        <div class="panelist-appearances">
+            <div class="label">Appearances</div>
+            {% if panelist.appearances %}
+            <ul>
+                <li>Regular Shows: {{ panelist.appearances.count.regular_shows }}</li>
+                <li>Shows with Scores: {{ panelist.appearances.count.shows_with_scores }}</li>
+                <li>All Shows: {{ panelist.appearances.count.all_shows }}</li>
+                <li>First Show: {{ panelist.appearances.milestones.first.show_date }}</li>
+                <li>Most Recent: {{ panelist.appearances.milestones.most_recent.show_date }}</li>
+            </ul>
+            {% endif %}
+        </div>
+
+        <div class="panelist-ranking">
+            <div class="label">Ranking</div>
+            {% if panelist.statistics.ranking %}
+            <ul>
+                <li>First: {{ panelist.statistics.ranking.rank.first }}
+                    ({{ panelist.statistics.ranking.percentage.first}} %)
+                </li>
+                <li>First Tied: {{ panelist.statistics.ranking.rank.first_tied }}
+                    ({{ panelist.statistics.ranking.percentage.first_tied}} %)
+                </li>
+                <li>Second: {{ panelist.statistics.ranking.rank.second }}
+                    ({{ panelist.statistics.ranking.percentage.second}} %)
+                </li>
+                <li>Second Tied: {{ panelist.statistics.ranking.rank.second_tied }}
+                    ({{ panelist.statistics.ranking.percentage.second_tied}} %)
+                </li>
+                <li>Third: {{ panelist.statistics.ranking.rank.third }}
+                    ({{ panelist.statistics.ranking.percentage.third}} %)
+                </li>
+            </ul>
+            {% else %}
+            N/A
+            {% endif %}
+        </div>
+
+        <div class="panelist-scoring">
+            <div class="label">Scoring</div>
+            {% if panelist.statistics.scoring %}
+            <ul>
+                <li>Minimum: {{ panelist.statistics.scoring.minimum }}</li>
+                <li>Maximum: {{ panelist.statistics.scoring.maximum }}</li>
+                <li>Mean: {{ panelist.statistics.scoring.mean }}</li>
+                <li>Median: {{ panelist.statistics.scoring.standard_deviation }}</li>
+                <li>Total: {{ panelist.statistics.scoring.total }}</li>
+            </ul>
+            {% else %}
+            N/A
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+</div>

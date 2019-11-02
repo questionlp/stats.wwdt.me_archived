@@ -13,6 +13,8 @@ from flask import (Flask, abort, redirect, render_template,
                    render_template_string, request, url_for)
 import mysql.connector
 from slugify import slugify
+from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
+                   scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Flask App Initialization
 app = Flask(__name__)
@@ -53,6 +55,20 @@ def generate_date_time_stamp():
 
 #endregion
 
+#region Filters
+@app.template_filter("rankify")
+def panelist_rank_format(rank: Text):
+    rank_label = {
+        "1": "First",
+        "1t": "First Tied",
+        "2": "Second",
+        "2t": "Second Tied",
+        "3": "Third"
+    }
+    return rank_label[rank]
+
+#endregion
+
 #region Error Routes
 def error_500(error):
     return render_template_string(error)
@@ -62,12 +78,20 @@ def error_500(error):
 #region Guest Routes
 @app.route("/guests")
 def get_guests():
-    return render_template_string("guests")
+    database_connection.reconnect()
+    guests_list = ww_guest.info.retrieve_all(database_connection)
+    if guests_list:
+        return render_template_string("<pre>{{g}}</pre>", g=json.dumps(guests_list, indent=1))
 
 @app.route("/guests/<string:guest>")
 def get_guests_details(guest: Text):
+    database_connection.reconnect()
     guest_slug = slugify(guest)
-    return render_template_string("guests: {{ guest_slug }}", guest_slug=guest_slug)
+    guest_details = ww_guest.details.retrieve_by_slug(guest_slug, database_connection)
+    if guest_details:
+        return render_template_string("<pre>{{g}}</pre>", g=json.dumps(guest_details, indent=1))
+    else:
+        return render_template_string("{{gs}} not found", gs=guest_slug)
 
 #endregion
 
@@ -76,12 +100,20 @@ def get_guests_details(guest: Text):
 #region Host Routes
 @app.route("/hosts")
 def get_hosts():
-    return render_template_string("hosts")
+    database_connection.reconnect()
+    hosts_list = ww_host.info.retrieve_all(database_connection)
+    if hosts_list:
+        return render_template_string("<pre>{{h}}</pre>", h=json.dumps(hosts_list, indent=1))
 
 @app.route("/hosts/<string:host>")
 def get_hosts_details(host: Text):
+    database_connection.reconnect()
     host_slug = slugify(host)
-    return render_template_string("hosts: {{ host_slug }}", host_slug=host_slug)
+    host_details = ww_host.details.retrieve_by_slug(host_slug, database_connection)
+    if host_details:
+        return render_template_string("<pre>{{h}}</pre>", h=json.dumps(host_details, indent=1))
+    else:
+        return render_template_string("{{ hs }} not found", hs=host_slug)
 
 #endregion
 
@@ -90,12 +122,21 @@ def get_hosts_details(host: Text):
 #region Panelist Routes
 @app.route("/panelists")
 def get_panelists():
-    return
+    database_connection.reconnect()
+    panelists_list = ww_panelist.details.retrieve_all(database_connection)
+    if panelists_list:
+        return render_template("panelists/index.html", panelists_list=panelists_list)
+        #return render_template_string("<pre>{{p}}</pre>", p=json.dumps(panelists_list, indent=1))
 
 @app.route("/panelists/<string:panelist>")
 def get_panelists_details(panelist: Text):
+    database_connection.reconnect()
     panelist_slug = slugify(panelist)
-    return
+    if panelist != panelist_slug:
+        return redirect(url_for('get_panelists_details', panelist=panelist_slug))
+    panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug, database_connection)
+    if panelist_details:
+        return render_template("panelists/details.html", panelist=panelist_details)
 
 #endregion
 
@@ -108,8 +149,13 @@ def get_scorekeepers():
 
 @app.route("/scorekeepers/<string:scorekeeper>")
 def get_scorekeepers_details(scorekeeper: Text):
+    database_connection.reconnect()
     scorekeeper_slug = slugify(scorekeeper)
-    return
+    scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug, database_connection)
+    if scorekeeper_details:
+        return render_template_string("{{ sk }}", sk=json.dumps(scorekeeper_details))
+    else:
+        return render_template_string("{{ sks }} not found", sks=scorekeeper_slug)
 
 #endregion
 
