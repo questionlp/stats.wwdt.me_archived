@@ -75,6 +75,22 @@ def error_500(error):
 
 #endregion
 
+#region Default Routes
+@app.route("/")
+@app.route("/guest")
+@app.route("/location")
+@app.route("/panelist")
+@app.route("/scorekeeper")
+@app.route("/show")
+def index():
+    global ga_property_code
+
+    return render_template("index.html",
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
+
+#endregion
+
 #region Guest Routes
 @app.route("/guests")
 def get_guests():
