@@ -1,0 +1,60 @@
+<!-- Start Navigation -->
+<nav>
+    <div class="nav-wrapper">
+        <a href="#" data-target="slide-out" class="sidenav-trigger">
+            <i class="material-icons">menu</i>
+        </a>
+
+        <ul id="dropdown-shows" class="dropdown-content">
+            {% for year in show_years %}
+            <li><a href="#">{{ year }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <ul id="dropdown-more" class="dropdown-content">
+            <li><a href="#">About</a></li>
+            <li><a href="//blog.wwdt.me/">Blog</a></li>
+            <li><a href="//blog.wwdt.me/contact-me/">Contact Me</a></li>
+            <li><a href="#">Reports</a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="#">Guests</a></li>
+            <li><a href="#">Hosts</a></li>
+            <li><a href="#">Panelists</a></li>
+            <li><a href="#">Scorekeepers</a></li>
+            <li>
+                <a href="#" class="dropdown-trigger" data-target="dropdown-shows">
+                Shows<i class="material-icons right">arrow_drop_down</i>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="dropdown-trigger" data-target="dropdown-more">
+                More<i class="material-icons right">arrow_drop_down</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div id="slide-out" class="sidenav">
+    <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+
+        <li><div class="divider"></div></li>
+
+        <li><a href="#">Guests</a></li>
+        <li><a href="#">Hosts</a></li>
+        <li><a href="#">Panelists</a></li>
+        <li><a href="#">Scorekeepers</a></li>
+        <li><a href="#">Shows</a></li>
+
+        <li><div class="divider"></div></li>
+
+        <li><a href="#">About</a></li>
+        <li><a href="//blog.wwdt.me/">Blog</a></li>
+        <li><a href="//blog.wwdt.me/contact-me/">Contact Me</a></li>
+        <li><a href="#">Reports</a></li>
+    </ul>
+</div>
+<!-- End Navigation -->

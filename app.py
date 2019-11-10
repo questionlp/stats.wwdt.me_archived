@@ -27,10 +27,6 @@ app.create_jinja_environment()
 
 #endregion
 
-#region Global Variables
-ga_property_code = None
-#endregion
-
 #region Bootstrap Functions
 def load_config():
     """Load configuration settings from config.json"""
@@ -53,6 +49,14 @@ def generate_date_time_stamp():
     now = datetime.now(time_zone)
     return now.strftime("%A, %B %d, %Y %H:%M:%S %Z")
 
+def retrieve_show_years(reverse_order: bool = True):
+    """Retrieve list of available show years"""
+    database_connection.reconnect()
+    years = ww_show.info.retrieve_years(database_connection)
+    if reverse_order:
+        years.reverse()
+
+    return years
 #endregion
 
 #region Filters
@@ -69,11 +73,13 @@ def panelist_rank_format(rank: Text):
 
 #endregion
 
+
 #region Error Routes
 def error_500(error):
     return render_template_string(error)
 
 #endregion
+
 
 #region Default Routes
 @app.route("/")
@@ -83,13 +89,13 @@ def error_500(error):
 @app.route("/scorekeeper")
 @app.route("/show")
 def index():
-    global ga_property_code
-
     return render_template("index.html",
+                           show_years=retrieve_show_years(),
                            ga_property_code=ga_property_code,
                            rendered_at=generate_date_time_stamp())
 
 #endregion
+
 
 #region Guest Routes
 @app.route("/guests")
@@ -110,7 +116,6 @@ def get_guests_details(guest: Text):
         return render_template_string("{{gs}} not found", gs=guest_slug)
 
 #endregion
-
 
 
 #region Host Routes
@@ -134,7 +139,6 @@ def get_hosts_details(host: Text):
 #endregion
 
 
-
 #region Panelist Routes
 @app.route("/panelists")
 def get_panelists():
@@ -155,7 +159,6 @@ def get_panelists_details(panelist: Text):
         return render_template("panelists/details.html", panelist=panelist_details)
 
 #endregion
-
 
 
 #region Scorekeeper Routes
@@ -189,7 +192,6 @@ def get_shows_year(year: int):
 def get_shows_year_month(year: int, month: int):
     return
 
-
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
 def get_shows_year_month_day(year: int, month: int, day: int):
     return
@@ -205,15 +207,12 @@ def get_shows_recent():
 #endregion
 
 
-
-
-
 #region Application Initialization
 config_dict = load_config()
+ga_property_code = config_dict["settings"]["ga_property_code"]
 database_connection = mysql.connector.connect(**config_dict["database"])
 database_connection.autocommit = True
 time_zone = pytz.timezone("America/Los_Angeles")
-
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port="9248")
