@@ -1,17 +1,17 @@
 <!-- Start Navigation -->
-<nav>
+<nav class="z-depth-0">
     <div class="nav-wrapper">
         <a href="#" data-target="slide-out" class="sidenav-trigger">
             <i class="material-icons">menu</i>
         </a>
 
-        <ul id="dropdown-shows" class="dropdown-content">
+        <ul id="dropdown-shows" class="dropdown-content z-depth-0">
             {% for year in show_years %}
             <li><a href="#">{{ year }}</a></li>
             {% endfor %}
         </ul>
 
-        <ul id="dropdown-more" class="dropdown-content">
+        <ul id="dropdown-more" class="dropdown-content z-depth-0">
             <li><a href="#">About</a></li>
             <li><a href="//blog.wwdt.me/">Blog</a></li>
             <li><a href="//blog.wwdt.me/contact-me/">Contact Me</a></li>
@@ -37,7 +37,7 @@
     </div>
 </nav>
 
-<div id="slide-out" class="sidenav">
+<div id="slide-out" class="sidenav z-depth-0">
     <ul>
         <li><a href="{{ url_for('index') }}">Home</a></li>
 

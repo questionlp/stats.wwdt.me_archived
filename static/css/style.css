@@ -21,6 +21,10 @@
         font-weight: initial;
     }
 
+    .dropdown-content {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+    }
+
     .dropdown-content li>a, .dropdown-content li>span {
         color: initial;
     }
