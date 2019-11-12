@@ -103,6 +103,7 @@ def index():
     recent_shows = ww_show.details.retrieve_recent(database_connection)
     recent_shows.reverse()
     return render_template("index.html",
+                           date_string_to_date=date_string_to_date,
                            show_years=retrieve_show_years(),
                            shows=recent_shows,
                            ga_property_code=ga_property_code,
