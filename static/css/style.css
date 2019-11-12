@@ -16,9 +16,14 @@
     div.label { border-bottom: 1px solid rgba(0, 0, 0, 0.25); font-weight: 600; }
     div.show-block { border-left: 4px solid rgba(0, 0, 0, 0.25); margin: 1rem 0 2.25rem; }
     div.show-block a { border-bottom: 1px dotted; }
-    div.show-block a:after { content: " \2192"; }
+    div.show-block a::after { content: " \2192"; }
     .show-description, .show-notes { white-space: pre-line; }
-    .data-tbd, .data-na { font-style: italic; }
+    .show-bestof, .show-repeat { font-weight: 500; padding: 0.25rem 1rem; margin-right: 0.5rem; }
+    .show-bestof { background-color: #bbdefb; }
+    .show-repeat { background-color: #ffe0b2; }
+    .show-repeat>a { border-bottom: none !important; }
+    .show-repeat>a::after { content: none !important; }
+    .data-tbd, .data-na, .data-multiple { font-style: italic; }
     footer { margin-top: 2rem; }
     footer a { border-bottom: 1px dotted; color: rgba(255,255,255,0.9); }
 }

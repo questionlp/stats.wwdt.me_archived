@@ -3,6 +3,19 @@
 <h2><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">{{ show.date }}</a></h2>
 
 <div class="show-block">
+{% if show.best_of or show.repeat_show %}
+<div class="row">
+    <div class="col s12">
+        {% if show.best_of %}
+        <span class="show-bestof">Best Of</span>
+        {% endif %}
+        {% if show.repeat_show %}
+            {% set repeat_show = date_string_to_date(show.original_show_date) %}
+        <span class="show-repeat">Repeat: <a href="{{ url_for('get_shows_year_month_day', year=repeat_show.year, month=repeat_show.month, day=repeat_show.day) }}">{{ show.original_show_date }}</a></span>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 <div class="row">
     <div class="col s12">
         <div class="label">Location</div>
@@ -21,7 +34,10 @@
     <div class="col s12 m6">
         <div class="label">Host</div>
         {% if show.host.slug != "tbd" %}
-            <a href="{{ url_for('get_hosts_details', host=show.host.slug) }}">{{ show.host.name}}</a>
+            {% if show.host.guest %}
+            Guest:
+            {% endif %}
+            <a href="{{ url_for('get_hosts_details', host=show.host.slug) }}">{{ show.host.name }}</a>
         {% else %}
             <span class="data-tbd">TBD</span>
         {% endif %}
@@ -29,6 +45,9 @@
     <div class="col s12 m6">
         <div class="label">Scorekeeper</div>
         {% if show.scorekeeper.slug != "tbd" %}
+            {% if show.scorekeeper.guest %}
+            Guest:
+            {% endif %}
             <a href="{{ url_for('get_scorekeepers_details', scorekeeper=show.scorekeeper.slug) }}">{{ show.scorekeeper.name }}</a>
         {% else %}
             <span class="data-tbd">TBD</span>
@@ -50,7 +69,11 @@
                             ({{ panelist.lightning_round_start}} / {{ panelist.lightning_round_correct}})
                         {% endif %}
                     {% else %}
-                        <a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">{{ panelist.name }}</a>
+                        {% if panelist.slug != 'multiple' %}
+                            <a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">{{ panelist.name }}</a>
+                        {% else %}
+                            <span class="data-multiple">Multiple Panelists</span>
+                        {% endif %}
                     {% endif %}
                 </li>
             {% endfor %}

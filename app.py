@@ -217,24 +217,32 @@ def get_show():
 
 @app.route("/shows")
 def get_shows():
-    return
+    database_connection.reconnect()
+    show_years = retrieve_show_years()
+    return render_template("shows/shows.html",
+                           show_years=show_years,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
 
 @app.route("/shows/<int:year>")
 def get_shows_year(year: int):
-    database_connection.reconnect()
-    date_year = date(year=year, month=1, day=1)
-    show_months = ww_show.info.retrieve_months_by_year(show_year=year,
-                                                       database_connection=database_connection)
-    months = []
-    for month in show_months:
-        months.append(date(year=year, month=month, day=1))
+    try:
+        database_connection.reconnect()
+        date_year = date(year=year, month=1, day=1)
+        show_months = ww_show.info.retrieve_months_by_year(show_year=year,
+                                                           database_connection=database_connection)
+        months = []
+        for month in show_months:
+            months.append(date(year=year, month=month, day=1))
 
-    return render_template("shows/year.html",
-                           date_string_to_date=date_string_to_date,
-                           year=date_year,
-                           show_months=months,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+        return render_template("shows/year.html",
+                               date_string_to_date=date_string_to_date,
+                               year=date_year,
+                               show_months=months,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    except:
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/<string:show_date>")
 def get_shows_date(show_date: Text):
@@ -247,54 +255,74 @@ def get_shows_date(show_date: Text):
                                 day=parsed_date.day,
                                 ), code=301)
     except:
-        return redirect(url_for("index"))
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/<int:year>/<int:month>")
 def get_shows_year_month(year: int, month: int):
-    database_connection.reconnect()
-    year_month = date(year=year, month=month, day=1)
-    show_list = ww_show.details.retrieve_by_year_month(show_year=year,
+    try:
+        database_connection.reconnect()
+        year_month = date(year=year, month=month, day=1)
+        show_list = ww_show.details.retrieve_by_year_month(show_year=year,
                                                        show_month=month,
                                                        database_connection=database_connection)
-    if not show_list:
-        return redirect(url_for("index"))
+        if not show_list:
+            return redirect(url_for("index"))
 
-    return render_template("shows/year_month.html",
-                           date_string_to_date=date_string_to_date,
-                           show_years=retrieve_show_years(),
-                           year_month=year_month,
-                           shows=show_list,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+        return render_template("shows/year_month.html",
+                               date_string_to_date=date_string_to_date,
+                               show_years=retrieve_show_years(),
+                               year_month=year_month,
+                               shows=show_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    except:
+        return redirect(url_for("get_shows_year", year=year))
 
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
 def get_shows_year_month_day(year: int, month: int, day: int):
-    database_connection.reconnect()
-    show_list = []
-    today = date(year=year, month=month, day=day)
-    details = ww_show.details.retrieve_by_date(show_year=year,
-                                               show_month=month,
-                                               show_day=day,
-                                               database_connection=database_connection)
-    if not details:
-        return redirect(url_for("index"))
+    try:
+        database_connection.reconnect()
+        show_list = []
+        today = date(year=year, month=month, day=day)
+        details = ww_show.details.retrieve_by_date(show_year=year,
+                                                   show_month=month,
+                                                   show_day=day,
+                                                   database_connection=database_connection)
+        if not details:
+            return redirect(url_for("index"))
 
-    show_list.append(details)
-    return render_template("shows/single.html",
-                           date_string_to_date=date_string_to_date,
-                           show_years=retrieve_show_years(),
-                           today=today,
-                           shows=show_list,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+        show_list.append(details)
+        return render_template("shows/single.html",
+                               date_string_to_date=date_string_to_date,
+                               show_years=retrieve_show_years(),
+                               today=today,
+                               shows=show_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    except:
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/<int:year>/all")
 def get_shows_year_all(year: int):
-    return
+    try:
+        database_connection.reconnect()
+        shows_list = ww_show.details.retrieve_by_year(show_year=year,
+                                                      database_connection=database_connection)
+        if not shows_list:
+            return redirect(url_for("get_shows_year", year=year))
+
+        return render_template("shows/year_all.html",
+                               date_string_to_date=date_string_to_date,
+                               year=year,
+                               shows=shows_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    except:
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/recent")
 def get_shows_recent():
-    return
+    return redirect(url_for("index"))
 
 #endregion
 

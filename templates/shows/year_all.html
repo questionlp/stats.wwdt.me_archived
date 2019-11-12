@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block css %}index.css{% endblock %}
+{% block title %}All | {{ year }}{% endblock %}
+{% block header_title %}Wait Wait... Don't Tell Me! Stats Page{% endblock %}
+
+{% block content %}
+<div class="show-breadcrumb">
+    <a href="{{ url_for('get_shows') }}">Shows</a> &gt;
+    <a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a>
+</div>
+
+<h1>Show Details: {{ year }}</h1>
+
+{% include "shows/multi.html" %}
+{% endblock %}

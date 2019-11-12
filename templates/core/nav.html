@@ -9,7 +9,7 @@
 
         <ul id="dropdown-shows" class="dropdown-content z-depth-0">
             {% for year in show_years %}
-            <li><a href="#">{{ year }}</a></li>
+            <li><a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a></li>
             {% endfor %}
         </ul>
 
@@ -26,14 +26,12 @@
             <li><a href="#">Panelists</a></li>
             <li><a href="#">Scorekeepers</a></li>
             <li>
-                <a href="#" class="dropdown-trigger" data-target="dropdown-shows">
-                Shows<i class="material-icons right">arrow_drop_down</i>
-                </a>
+                <a href="{{ url_for('get_shows') }}" class="dropdown-trigger" data-target="dropdown-shows">
+                Shows<i class="material-icons right">arrow_drop_down</i></a>
             </li>
             <li>
                 <a href="#" class="dropdown-trigger" data-target="dropdown-more">
-                More<i class="material-icons right">arrow_drop_down</i>
-                </a>
+                More<i class="material-icons right">arrow_drop_down</i></a>
             </li>
         </ul>
     </div>
