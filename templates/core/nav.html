@@ -1,9 +1,11 @@
 <!-- Start Navigation -->
-<nav class="z-depth-0">
+<nav class="blue darken-4 z-depth-0">
     <div class="nav-wrapper">
         <a href="#" data-target="slide-out" class="sidenav-trigger">
             <i class="material-icons">menu</i>
         </a>
+
+        <a href="{{ url_for('index') }}" class="brand-logo">Wait Wait Stats Page</a>
 
         <ul id="dropdown-shows" class="dropdown-content z-depth-0">
             {% for year in show_years %}

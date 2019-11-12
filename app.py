@@ -3,9 +3,9 @@
 # stats.wwdt.me is relased under the terms of the Apache License 2.0
 """Flask application startup file"""
 
-from datetime import datetime
+from datetime import date, datetime
+from dateutil import parser
 import json
-import os
 import pytz
 from typing import Optional, Text
 
@@ -57,6 +57,14 @@ def retrieve_show_years(reverse_order: bool = True):
         years.reverse()
 
     return years
+
+def date_string_to_date(date_string: Text):
+    try:
+        date = parser.parse(date_string)
+        return date
+    except:
+        return None
+
 #endregion
 
 #region Filters
@@ -71,8 +79,11 @@ def panelist_rank_format(rank: Text):
     }
     return rank_label[rank]
 
-#endregion
+@app.template_filter("pretty_jsonify")
+def pretty_jsonify(data):
+    return json.dumps(data, indent=2)
 
+#endregion
 
 #region Error Routes
 def error_500(error):
@@ -80,17 +91,20 @@ def error_500(error):
 
 #endregion
 
+#region General Redirect Routes
+@app.route("/location")
+def get_location():
+    return redirect(url_for("index"))
 
 #region Default Routes
 @app.route("/")
-@app.route("/guest")
-@app.route("/location")
-@app.route("/panelist")
-@app.route("/scorekeeper")
-@app.route("/show")
 def index():
+    database_connection.reconnect()
+    recent_shows = ww_show.details.retrieve_recent(database_connection)
+    recent_shows.reverse()
     return render_template("index.html",
                            show_years=retrieve_show_years(),
+                           shows=recent_shows,
                            ga_property_code=ga_property_code,
                            rendered_at=generate_date_time_stamp())
 
@@ -98,6 +112,10 @@ def index():
 
 
 #region Guest Routes
+@app.route("/guest")
+def get_guest():
+    return redirect(url_for("get_guests"), code=301)
+
 @app.route("/guests")
 def get_guests():
     database_connection.reconnect()
@@ -119,6 +137,10 @@ def get_guests_details(guest: Text):
 
 
 #region Host Routes
+@app.route("/host")
+def get_host():
+    return redirect(url_for("get_hosts"), code=301)
+
 @app.route("/hosts")
 def get_hosts():
     database_connection.reconnect()
@@ -140,6 +162,10 @@ def get_hosts_details(host: Text):
 
 
 #region Panelist Routes
+@app.route("/panelist")
+def get_panelist():
+    return redirect(url_for("get_panelists"), code=301)
+
 @app.route("/panelists")
 def get_panelists():
     database_connection.reconnect()
@@ -162,6 +188,10 @@ def get_panelists_details(panelist: Text):
 
 
 #region Scorekeeper Routes
+@app.route("/scorekeeper")
+def get_scorekeeper():
+    return redirect(url_for("get_scorekeepers"), code=301)
+
 @app.route("/scorekeepers")
 def get_scorekeepers():
     return
@@ -180,21 +210,82 @@ def get_scorekeepers_details(scorekeeper: Text):
 
 
 #region Show Routes
+@app.route("/show")
+def get_show():
+    return redirect(url_for("get_shows"), code=301)
+
 @app.route("/shows")
 def get_shows():
     return
 
 @app.route("/shows/<int:year>")
 def get_shows_year(year: int):
-    return
+    database_connection.reconnect()
+    date_year = date(year=year, month=1, day=1)
+    show_months = ww_show.info.retrieve_months_by_year(show_year=year,
+                                                       database_connection=database_connection)
+    months = []
+    for month in show_months:
+        months.append(date(year=year, month=month, day=1))
+
+    return render_template("shows/year.html",
+                           date_string_to_date=date_string_to_date,
+                           year=date_year,
+                           show_months=months,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
+
+@app.route("/shows/<string:show_date>")
+def get_shows_date(show_date: Text):
+    try:
+        parsed_date = parser.parse(show_date)
+        return redirect(url_for("get_shows_year_month_day",
+                                date_string_to_date=date_string_to_date,
+                                year=parsed_date.year,
+                                month=parsed_date.month,
+                                day=parsed_date.day,
+                                ), code=301)
+    except:
+        return redirect(url_for("index"))
 
 @app.route("/shows/<int:year>/<int:month>")
 def get_shows_year_month(year: int, month: int):
-    return
+    database_connection.reconnect()
+    year_month = date(year=year, month=month, day=1)
+    show_list = ww_show.details.retrieve_by_year_month(show_year=year,
+                                                       show_month=month,
+                                                       database_connection=database_connection)
+    if not show_list:
+        return redirect(url_for("index"))
+
+    return render_template("shows/year_month.html",
+                           date_string_to_date=date_string_to_date,
+                           show_years=retrieve_show_years(),
+                           year_month=year_month,
+                           shows=show_list,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
 
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
 def get_shows_year_month_day(year: int, month: int, day: int):
-    return
+    database_connection.reconnect()
+    show_list = []
+    today = date(year=year, month=month, day=day)
+    details = ww_show.details.retrieve_by_date(show_year=year,
+                                               show_month=month,
+                                               show_day=day,
+                                               database_connection=database_connection)
+    if not details:
+        return redirect(url_for("index"))
+
+    show_list.append(details)
+    return render_template("shows/single.html",
+                           date_string_to_date=date_string_to_date,
+                           show_years=retrieve_show_years(),
+                           today=today,
+                           shows=show_list,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
 
 @app.route("/shows/<int:year>/all")
 def get_shows_year_all(year: int):

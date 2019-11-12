@@ -1,0 +1,124 @@
+{% for show in shows %}
+{% set show_date = date_string_to_date(show.date) %}
+<h2><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">{{ show.date }}</a></h2>
+
+<div class="show-block">
+<div class="row">
+    <div class="col s12">
+        <div class="label">Location</div>
+        {% if show.location.venue %}
+            {{ show.location.venue }}
+            {% if show.location.city and show.location.state %}
+                ({{ show.location.city }}, {{ show.location.state }})
+            {% endif %}
+        {% else %}
+            <span class="data-tbd">TBD</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m6">
+        <div class="label">Host</div>
+        {% if show.host.slug != "tbd" %}
+            <a href="{{ url_for('get_hosts_details', host=show.host.slug) }}">{{ show.host.name}}</a>
+        {% else %}
+            <span class="data-tbd">TBD</span>
+        {% endif %}
+    </div>
+    <div class="col s12 m6">
+        <div class="label">Scorekeeper</div>
+        {% if show.scorekeeper.slug != "tbd" %}
+            <a href="{{ url_for('get_scorekeepers_details', scorekeeper=show.scorekeeper.slug) }}">{{ show.scorekeeper.name }}</a>
+        {% else %}
+            <span class="data-tbd">TBD</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m6">
+        <div class="label">Panelists</div>
+        {% if show.panelists %}
+            <ul class="panelist-list">
+            {% for panelist in show.panelists %}
+                <li>
+                    {{ "%s:"|format(panelist.rank|rankify) if panelist.rank }}
+                    {% if panelist.score %}
+                        <a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">{{ panelist.name }}</a> {{ panelist.score }}
+                        {% if panelist.lightning_round_start and panelist.lightning_round_correct %}
+                            ({{ panelist.lightning_round_start}} / {{ panelist.lightning_round_correct}})
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">{{ panelist.name }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <span class="data-na">N/A</span>
+        {% endif %}
+    </div>
+
+    <div class="col s12 m6">
+        <div class="label">Guests</div>
+        {% if show.guests %}
+            <ul class="guest-list">
+                {% for guest in show.guests %}
+                <li>
+                    <a href="{{ url_for('get_guests_details', guest=guest.slug) }}">{{ guest.name }}</a>
+                    {{ "%s"|format(guest.score) if guest.score }}
+                    {{ "*" if guest.score_exception }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <span class="data-na">N/A</span>
+        {% endif %}
+    </div>
+</div>
+
+{% if show.bluff.chosen_panelist or show.bluff.correct_panelist %}
+<div class="row">
+    <div class="col s12">
+        <div class="label">Bluff</div>
+    </div>
+    <div class="col s12 m6">
+        Chosen:
+        {% if show.bluff.chosen_panelist %}
+            <a href="{{ url_for('get_panelists_details', panelist=show.bluff.chosen_panelist.slug) }}">{{ show.bluff.chosen_panelist.name }}</a>
+        {% else %}
+            <span class="data-na">N/A</span>
+        {% endif %}
+    </div>
+    <div class="col s12 m6">
+        Correct:
+        {% if show.bluff.correct_panelist %}
+            <a href="{{ url_for('get_panelists_details', panelist=show.bluff.correct_panelist.slug) }}">{{ show.bluff.correct_panelist.name }}</a>
+        {% else %}
+            <span class="data-na">N/A</span>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if show.description %}
+<div class="row">
+    <div class="col s12">
+        <div class="label">Description</div>
+        <div class="show-description">{{ show.description }}</div>
+    </div>
+</div>
+{% endif %}
+
+{% if show.notes %}
+<div class="row">
+    <div class="col s12">
+        <div class="label">Notes</div>
+        <div class="show-notes">{{ show.notes }}</div>
+    </div>
+</div>
+{% endif %}
+
+</div>
+{% endfor %}

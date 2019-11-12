@@ -3,7 +3,6 @@
 <head>
     <title>{% block title %}{% endblock %} | Wait Wait Don't Tell Me! Reports</title>
     {% include "core/head.html" with context %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/') }}{% block css %}{% endblock %}">
     
     {% if ga_property_code %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
