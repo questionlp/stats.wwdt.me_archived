@@ -327,6 +327,33 @@ def get_shows_recent():
 #endregion
 
 
+#region NPR Show Redirect Routes
+@app.route("/s/<string:show_date>")
+def npr_show_redirect(show_date: Text):
+    show_date_object = date_string_to_date(show_date)
+    if not show_date_object:
+        return redirect(url_for("index"))
+
+    if ww_show.utility.date_exists(show_year=show_date_object.year,
+                                   show_month=show_date_object.month,
+                                   show_day=show_date_object.day,
+                                   database_connection=database_connection):
+        current_url_prefix = "http://www.npr.org/programs/wait-wait-dont-tell-me/archive?date="
+        legacy_url_prefix = "http://www.npr.org/programs/waitwait/archrndwn"
+        legacy_url_suffix = ".waitwait.html"
+        if show_date_object >= datetime(year=2006, month=1, day=7):
+            show_date_string = show_date_object.strftime("%m-%d-%Y")
+            url = f"{current_url_prefix}{show_date_string}"
+        else:
+            show_date_string = show_date_object.strftime("%y%m%d")
+            year = show_date_object.strftime("%Y")
+            month = show_date_object.strftime("%b").lower()
+            url = f"{legacy_url_prefix}/{year}/{month}/{show_date_string}{legacy_url_suffix}"
+
+    return redirect(url)
+
+#endregion
+
 #region Application Initialization
 config_dict = load_config()
 ga_property_code = config_dict["settings"]["ga_property_code"]

@@ -1,6 +1,6 @@
 @media all {
     html, button, input, select, textarea { font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: initial; }
-    main a { color: #0d47a1;}
+    main a { color: #3060c0;}
     pre, code { font-family: "IBM Plex Mono", "Consolas", "Monaco", monospace; }
     nav a.sidenav-trigger { display: initial; }
     nav .brand-logo { font-size: 1.5rem; }
@@ -18,11 +18,13 @@
     div.show-block a { border-bottom: 1px dotted; }
     div.show-block a::after { content: " \2192"; }
     .show-description, .show-notes { white-space: pre-line; }
-    .show-bestof, .show-repeat { font-weight: 500; padding: 0.25rem 1rem; margin-right: 0.5rem; }
+    .show-bestof, .show-repeat, .show-nprlink { font-weight: 500; padding: 0.25rem 1rem; margin-right: 0.5rem; }
     .show-bestof { background-color: #bbdefb; }
     .show-repeat { background-color: #ffe0b2; }
     .show-repeat>a { border-bottom: none !important; }
-    .show-repeat>a::after { content: none !important; }
+    .show-nprlink { background-color: #3366cc; color: white; }
+    .show-nprlink>a { border-bottom: none !important; color: white; }
+    .show-nprlink>a::after { content: " \2192"; }
     .data-tbd, .data-na, .data-multiple { font-style: italic; }
     footer { margin-top: 2rem; }
     footer a { border-bottom: 1px dotted; color: rgba(255,255,255,0.9); }
@@ -32,12 +34,17 @@
     nav .brand-logo { font-size: 1.0rem; font-weight: 500; left: 45%; transform: translateX(-40%); }
     .col.s12 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
     div.show-block { border-left: 2px solid rgba(0, 0, 0, 0.25); }
+    div.row.show-badges { margin-bottom: 0; }
     ul.panelist-list, ul.guest-list { line-height: 2; }
+    .show-bestof, .show-repeat, .show-nprlink { display: inline-flex; margin-bottom: 0.5rem; }
 }
 
 @media only print {
     html { margin: 1rem; }
-    nav, div.sidenav { display: none; visibility: hidden; }
+    nav, div.sidenav, .show-nprlink { display: none; visibility: hidden; }
     div.label, div.show-block { border: none; }
     div.show-block { margin-left: 1.5rem; }
+    div.row.show-badges { margin-bottom: 1rem; }
+    .show-bestof, .show-repeat { background-color: initial; color: initial; padding: initial; }
+    .show-bestof>a, .show-repeat>a { color: black; }
 }
