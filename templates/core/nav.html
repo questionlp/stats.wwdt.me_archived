@@ -22,7 +22,7 @@
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="{{ url_for('get_guests') }}">Guests</a></li>
-            <li><a href="#">Hosts</a></li>
+            <li><a href="{{ url_for('get_hosts') }}">Hosts</a></li>
             <li><a href="#">Panelists</a></li>
             <li><a href="#">Scorekeepers</a></li>
             <li>
@@ -44,7 +44,7 @@
         <li><div class="divider"></div></li>
 
         <li><a href="{{ url_for('get_guests') }}">Guests</a></li>
-        <li><a href="#">Hosts</a></li>
+        <li><a href="{{ url_for('get_hosts') }}">Hosts</a></li>
         <li><a href="#">Panelists</a></li>
         <li><a href="#">Scorekeepers</a></li>
         <li><a href="{{ url_for('get_shows') }}">Shows</a></li>

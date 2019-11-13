@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Hosts{% endblock %}
+
+{% block content %}
+<h1>Hosts</h1>
+<p>
+    Choose from one of the show hosts below to view their appearance details.
+</p>
+
+<ul class="collection">
+    {% for host in hosts %}
+    <li class="collection-item">
+        <a href="{{ url_for('get_hosts_details', host=host.slug) }}">{{ host.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

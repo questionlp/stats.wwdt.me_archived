@@ -171,17 +171,41 @@ def get_hosts():
     database_connection.reconnect()
     hosts_list = ww_host.info.retrieve_all(database_connection)
     if hosts_list:
-        return render_template_string("<pre>{{h}}</pre>", h=json.dumps(hosts_list, indent=1))
+        return render_template("hosts/hosts.html",
+                               hosts=hosts_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
 
 @app.route("/hosts/<string:host>")
 def get_hosts_details(host: Text):
     database_connection.reconnect()
     host_slug = slugify(host)
     host_details = ww_host.details.retrieve_by_slug(host_slug, database_connection)
+
     if host_details:
-        return render_template_string("<pre>{{h}}</pre>", h=json.dumps(host_details, indent=1))
+        hosts = []
+        hosts.append(host_details)
+        return render_template("hosts/single.html",
+                               date_string_to_date=date_string_to_date,
+                               host_name=host_details["name"],
+                               hosts=hosts,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
     else:
-        return render_template_string("{{ hs }} not found", hs=host_slug)
+        return redirect(url_for('get_hosts'))
+
+@app.route("/hosts/all")
+def get_hosts_all():
+    database_connection.reconnect()
+    hosts = ww_host.details.retrieve_all(database_connection)
+    if hosts:
+        return render_template("hosts/all.html",
+                               date_string_to_date=date_string_to_date,
+                               hosts=hosts,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for('get_hosts'))
 
 #endregion
 

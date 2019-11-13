@@ -1,26 +1,27 @@
-{% for guest in guests %}
-<h2><a href="{{ url_for('get_guests_details',
-                         guest=guest.slug) }}"
-       title="Database ID: {{ guest.id }}">{{ guest.name }}</a></h2>
+{% for host in hosts %}
+{% if not host.slug == "tbd" %}{# Skip TBD Host #}
+<h2><a href="{{ url_for('get_hosts_details',
+                         host=host.slug) }}"
+       title="Database ID: {{ host.id }}">{{ host.name }}</a></h2>
 
-<div class="guest-block">
+<div class="host-block">
 <div class="row">
     <div class="col s12 l6">
         <div class="label">Appearances</div>
-        {{ guest.appearances.count.regular_shows }}
+        {{ host.appearances.count.regular_shows }}
     </div>
     <div class="col s12 l6">
         <div class="label">Appearances including Best Of and Repeats</div>
-        {{ guest.appearances.count.all_shows }}
+        {{ host.appearances.count.all_shows }}
     </div>
 </div>
 
 <div class="row">
     <div class="col s12">
-        <div class="guest-appearance-list">
+        <div class="host-appearance-list">
             <div class="label">List of Appearances</div>
-            <ul class="guest-list">
-            {% for appearance in guest.appearances.shows %}
+            <ul class="host-list">
+            {% for appearance in host.appearances.shows %}
                 {% set show_date = date_string_to_date(appearance.date) %}
                 <li>
                     <a href="{{ url_for('get_shows_year_month_day',
@@ -34,10 +35,10 @@
                 {{ appearance.score }}
                 {% endif %}
                 {% if appearance.best_of %}
-                <span class="guest-show-bestof">Best Of</span>
+                <span class="host-show-bestof">Best Of</span>
                 {% endif %}
                 {% if appearance.repeat_show %}
-                <span class="guest-show-repeat">Repeat</span>
+                <span class="host-show-repeat">Repeat</span>
                 {% endif %}
                 </li>
             {% endfor %}
@@ -47,4 +48,5 @@
     </div>
 </div>
 </div>
+{% endif %}
 {% endfor %}
