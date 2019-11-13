@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Guests{% endblock %}
+
+{% block content %}
+<h1>Guests</h1>
+<p>
+    Choose from one of the guests below to view their appearance details.
+</p>
+
+<ul class="collection">
+    {% for guest in guests %}
+    <li class="collection-item">
+        <a href="{{ url_for('get_guests_details', guest=guest.slug) }}">{{ guest.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{# include "shows/multi.html" #}
+{% endblock %}

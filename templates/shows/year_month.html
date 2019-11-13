@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-{% block css %}index.css{% endblock %}
-{% block title %}{{ year_month.strftime("%B %Y") }}{% endblock %}
-{% block header_title %}Wait Wait... Don't Tell Me! Stats Page{% endblock %}
+{% block title %}{{ year_month.strftime("%B %Y") }} | Shows{% endblock %}
 
 {% block content %}
 <div class="show-breadcrumb">
@@ -11,5 +9,5 @@
 
 <h1>Show Details: {{ year_month.strftime("%B %Y") }}</h1>
 
-{% include "shows/multi.html" %}
+{% include "shows/details.html" %}
 {% endblock %}

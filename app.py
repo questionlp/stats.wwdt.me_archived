@@ -121,18 +121,25 @@ def get_guest():
 def get_guests():
     database_connection.reconnect()
     guests_list = ww_guest.info.retrieve_all(database_connection)
-    if guests_list:
-        return render_template_string("<pre>{{g}}</pre>", g=json.dumps(guests_list, indent=1))
+    return render_template("guests/guests.html",
+                           guests=guests_list,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
 
 @app.route("/guests/<string:guest>")
 def get_guests_details(guest: Text):
     database_connection.reconnect()
     guest_slug = slugify(guest)
     guest_details = ww_guest.details.retrieve_by_slug(guest_slug, database_connection)
+
     if guest_details:
-        return render_template_string("<pre>{{g}}</pre>", g=json.dumps(guest_details, indent=1))
+        return render_template("guests/single.html",
+                               date_string_to_date=date_string_to_date,
+                               guest=guest_details,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
     else:
-        return render_template_string("{{gs}} not found", gs=guest_slug)
+        return redirect(url_for('get_guests'))
 
 #endregion
 

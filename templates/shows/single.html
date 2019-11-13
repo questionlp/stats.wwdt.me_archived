@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-{% block css %}index.css{% endblock %}
-{% block title %}{{ today.isoformat() }}{% endblock %}
-{% block header_title %}Wait Wait... Don't Tell Me! Stats Page{% endblock %}
+{% block title %}{{ today.isoformat() }} | Shows{% endblock %}
 
 {% block content %}
 <div class="show-breadcrumb">
@@ -12,5 +10,5 @@
 
 <h1>Show Details</h1>
 
-{% include "shows/multi.html" %}
+{% include "guests/details.html" %}
 {% endblock %}

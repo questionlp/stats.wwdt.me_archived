@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-{% block css %}index.css{% endblock %}
-{% block title %}All | {{ year }}{% endblock %}
-{% block header_title %}Wait Wait... Don't Tell Me! Stats Page{% endblock %}
+{% block title %}All: {{ year }} | Shows{% endblock %}
 
 {% block content %}
 <div class="show-breadcrumb">
@@ -11,5 +9,5 @@
 
 <h1>Show Details: {{ year }}</h1>
 
-{% include "shows/multi.html" %}
+{% include "shows/details.html" %}
 {% endblock %}

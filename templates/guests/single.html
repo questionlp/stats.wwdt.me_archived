@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ guest_name }} | Guests{% endblock %}
+
+{% block content %}
+<div class="guest-breadcrumb">
+    <a href="{{ url_for('get_guests') }}">Guests</a>
+</div>
+
+<h1>Guest Details</h1>
+<pre>
+{{ guest|pretty_jsonify }}
+</pre>
+{% include "guests/details.html" %}
+{% endblock %}

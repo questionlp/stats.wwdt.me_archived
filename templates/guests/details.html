@@ -1,0 +1,59 @@
+<h2><a href="{{ url_for('get_guests_details', guest=guest.slug) }}" title="Database ID: {{ guest.id }}">{{ guest.name }}</a></h2>
+
+<ul>
+{% for appearance in guest.appearances.shows %}
+    {% set show_date = date_string_to_date(appearance.date) %}
+    <li><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">
+            {{appearance.date}}
+    </a>{{appearance.score}}
+    {% if appearance.score_exception %}
+    *
+    {% endif %}
+    </li>
+
+</ul>
+{% endfor %}
+<div class="guest-block">
+
+<div class="row">
+    <div class="col s12 l6">
+        <div class="label">Appearance Count</div>
+        {{ guest.appearances.count.regular_shows }}
+    </div>
+    <div class="col s12 l6">
+        <div class="label">Appearance  Count with Best Of/Repeats</div>
+        {{ guest.appearances.count.all_shows }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="guests-appearance-list">
+            {% for appearance in guest.appearances.shows %}
+                {% set show_date = date_string_to_date(appearance.date) %}
+                <li><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">
+                        {{appearance.date}}
+                </a>{{appearance.score}}
+                {% if appearance.score_exception %}
+                *
+                {% endif %}
+                </li>
+            
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col s12 m6">
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12 m6">
+    </div>
+
+    <div class="col s12 m6">
+    </div>
+</div>
+
+</div>
