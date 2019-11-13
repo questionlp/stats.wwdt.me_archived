@@ -1,6 +1,7 @@
 {% for show in shows %}
 {% set show_date = date_string_to_date(show.date) %}
-<h2><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">{{ show.date }}</a></h2>
+<h2><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}"
+    title="Database ID: {{ show.id }}">{{ show.date }}</a></h2>
 
 <div class="show-block">
 <div class="row show-badges">
