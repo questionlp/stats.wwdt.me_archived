@@ -7,6 +7,7 @@ from datetime import date, datetime
 from dateutil import parser
 import json
 import pytz
+import sys
 from typing import Optional, Text
 
 from flask import (Flask, abort, redirect, render_template,
@@ -133,9 +134,25 @@ def get_guests_details(guest: Text):
     guest_details = ww_guest.details.retrieve_by_slug(guest_slug, database_connection)
 
     if guest_details:
+        guests = []
+        guests.append(guest_details)
         return render_template("guests/single.html",
                                date_string_to_date=date_string_to_date,
-                               guest=guest_details,
+                               guest_name=guest_details["name"],
+                               guests=guests,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for('get_guests'))
+
+@app.route("/guests/all")
+def get_guests_all():
+    database_connection.reconnect()
+    guests = ww_guest.details.retrieve_all(database_connection)
+    if guests:
+        return render_template("guests/all.html",
+                               date_string_to_date=date_string_to_date,
+                               guests=guests,
                                ga_property_code=ga_property_code,
                                rendered_at=generate_date_time_stamp())
     else:
@@ -292,9 +309,9 @@ def get_shows_year_month_day(year: int, month: int, day: int):
         show_list = []
         today = date(year=year, month=month, day=day)
         details = ww_show.details.retrieve_by_date(show_year=year,
-                                                   show_month=month,
-                                                   show_day=day,
-                                                   database_connection=database_connection)
+                                                  show_month=month,
+                                                  show_day=day,
+                                                  database_connection=database_connection)
         if not details:
             return redirect(url_for("index"))
 

@@ -1,20 +1,9 @@
-<h2><a href="{{ url_for('get_guests_details', guest=guest.slug) }}" title="Database ID: {{ guest.id }}">{{ guest.name }}</a></h2>
+{% for guest in guests %}
+<h2><a href="{{ url_for('get_guests_details',
+                         guest=guest.slug) }}"
+       title="Database ID: {{ guest.id }}">{{ guest.name }}</a></h2>
 
-<ul>
-{% for appearance in guest.appearances.shows %}
-    {% set show_date = date_string_to_date(appearance.date) %}
-    <li><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">
-            {{appearance.date}}
-    </a>{{appearance.score}}
-    {% if appearance.score_exception %}
-    *
-    {% endif %}
-    </li>
-
-</ul>
-{% endfor %}
 <div class="guest-block">
-
 <div class="row">
     <div class="col s12 l6">
         <div class="label">Appearance Count</div>
@@ -28,32 +17,34 @@
 
 <div class="row">
     <div class="col s12">
-        <div class="guests-appearance-list">
+        <div class="guest-appearance-list">
+            <div class="label">Appearances</div>
+            <ul class="guest-list">
             {% for appearance in guest.appearances.shows %}
                 {% set show_date = date_string_to_date(appearance.date) %}
-                <li><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}">
-                        {{appearance.date}}
-                </a>{{appearance.score}}
-                {% if appearance.score_exception %}
-                *
+                <li>
+                    <a href="{{ url_for('get_shows_year_month_day',
+                                        year=show_date.year,
+                                        month=show_date.month,
+                                        day=show_date.day) }}">
+                    {{appearance.date}}</a>
+                {% if appearance.score and appearance.score_exception %}
+                {{appearance.score }} *
+                {% elif appearance.score and not appearance.score_exception %}
+                {{ appearance.score }}
+                {% endif %}
+                {% if appearance.best_of %}
+                <span class="guest-show-bestof">Best Of</span>
+                {% endif %}
+                {% if appearance.repeat_show %}
+                <span class="guest-show-repeat">Repeat</span>
                 {% endif %}
                 </li>
-            
-            </ul>
             {% endfor %}
+            </ul>
+            
         </div>
     </div>
-    <div class="col s12 m6">
-        
-    </div>
 </div>
-
-<div class="row">
-    <div class="col s12 m6">
-    </div>
-
-    <div class="col s12 m6">
-    </div>
 </div>
-
-</div>
+{% endfor %}
