@@ -24,7 +24,7 @@
             <li><a href="{{ url_for('get_guests') }}">Guests</a></li>
             <li><a href="{{ url_for('get_hosts') }}">Hosts</a></li>
             <li><a href="#">Panelists</a></li>
-            <li><a href="#">Scorekeepers</a></li>
+            <li><a href="{{ url_for('get_scorekeepers') }}">Scorekeepers</a></li>
             <li>
                 <a href="{{ url_for('get_shows') }}" class="dropdown-trigger" data-target="dropdown-shows">
                 Shows<i class="material-icons right">arrow_drop_down</i></a>
@@ -46,7 +46,7 @@
         <li><a href="{{ url_for('get_guests') }}">Guests</a></li>
         <li><a href="{{ url_for('get_hosts') }}">Hosts</a></li>
         <li><a href="#">Panelists</a></li>
-        <li><a href="#">Scorekeepers</a></li>
+        <li><a href="{{ url_for('get_scorekeepers') }}">Scorekeepers</a></li>
         <li><a href="{{ url_for('get_shows') }}">Shows</a></li>
 
         <li><div class="divider"></div></li>

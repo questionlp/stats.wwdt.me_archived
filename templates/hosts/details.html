@@ -1,6 +1,6 @@
 {% for host in hosts %}
 {% if not host.slug == "tbd" %}{# Skip TBD Host #}
-<h2><a href="{{ url_for('get_hosts_details',
+<h2><a href="{{ url_for('get_host_details',
                          host=host.slug) }}"
        title="Database ID: {{ host.id }}">{{ host.name }}</a></h2>
 
@@ -24,21 +24,21 @@
             {% for appearance in host.appearances.shows %}
                 {% set show_date = date_string_to_date(appearance.date) %}
                 <li>
-                    <a href="{{ url_for('get_shows_year_month_day',
+                    <a href="{{ url_for('get_show_year_month_day',
                                         year=show_date.year,
                                         month=show_date.month,
                                         day=show_date.day) }}">
                     {{appearance.date}}</a>
                 {% if appearance.score and appearance.score_exception %}
-                {{appearance.score }} *
+                    {{appearance.score }} *
                 {% elif appearance.score and not appearance.score_exception %}
-                {{ appearance.score }}
+                    {{ appearance.score }}
                 {% endif %}
                 {% if appearance.best_of %}
-                <span class="host-show-bestof">Best Of</span>
+                    <span class="host-show-bestof">Best Of</span>
                 {% endif %}
                 {% if appearance.repeat_show %}
-                <span class="host-show-repeat">Repeat</span>
+                    <span class="host-show-repeat">Repeat</span>
                 {% endif %}
                 </li>
             {% endfor %}

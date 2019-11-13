@@ -1,26 +1,26 @@
-{% for guest in guests %}
-<h2><a href="{{ url_for('get_guest_details',
-                         guest=guest.slug) }}"
-       title="Database ID: {{ guest.id }}">{{ guest.name }}</a></h2>
+{% for scorekeeper in scorekeepers %}
+<h2><a href="{{ url_for('get_scorekeeper_details',
+                         scorekeeper=scorekeeper.slug) }}"
+       title="Database ID: {{ scorekeeper.id }}">{{ scorekeeper.name }}</a></h2>
 
-<div class="guest-block">
+<div class="scorekeeper-block">
 <div class="row">
     <div class="col s12 l6">
         <div class="label">Appearances</div>
-        {{ guest.appearances.count.regular_shows }}
+        {{ scorekeeper.appearances.count.regular_shows }}
     </div>
     <div class="col s12 l6">
         <div class="label">Appearances including Best Of and Repeats</div>
-        {{ guest.appearances.count.all_shows }}
+        {{ scorekeeper.appearances.count.all_shows }}
     </div>
 </div>
 
 <div class="row">
     <div class="col s12">
-        <div class="guest-appearance-list">
+        <div class="scorekeeper-appearance-list">
             <div class="label">List of Appearances</div>
-            <ul class="guest-list">
-            {% for appearance in guest.appearances.shows %}
+            <ul class="scorekeeper-list">
+            {% for appearance in scorekeeper.appearances.shows %}
                 {% set show_date = date_string_to_date(appearance.date) %}
                 <li>
                     <a href="{{ url_for('get_show_year_month_day',
@@ -34,10 +34,10 @@
                     {{ appearance.score }}
                 {% endif %}
                 {% if appearance.best_of %}
-                    <span class="guest-show-bestof">Best Of</span>
+                    <span class="scorekeeper-show-bestof">Best Of</span>
                 {% endif %}
                 {% if appearance.repeat_show %}
-                    <span class="guest-show-repeat">Repeat</span>
+                    <span class="scorekeeper-show-repeat">Repeat</span>
                 {% endif %}
                 </li>
             {% endfor %}

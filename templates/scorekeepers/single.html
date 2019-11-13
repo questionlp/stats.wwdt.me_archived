@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ scorekeeper_name }} | Scorekeepers{% endblock %}
+
+{% block content %}
+<div class="page-breadcrumb">
+    <a href="{{ url_for('get_scorekeepers') }}">Scorekeepers</a>
+</div>
+
+<h1>Scorekeeper Details</h1>
+
+{% include "scorekeepers/details.html" %}
+{% endblock %}

@@ -1,6 +1,9 @@
 {% for show in shows %}
 {% set show_date = date_string_to_date(show.date) %}
-<h2><a href="{{ url_for('get_shows_year_month_day', year=show_date.year, month=show_date.month, day=show_date.day) }}"
+<h2><a href="{{ url_for('get_show_year_month_day',
+                        year=show_date.year,
+                        month=show_date.month,
+                        day=show_date.day) }}"
     title="Database ID: {{ show.id }}">{{ show.date }}</a></h2>
 
 <div class="show-block">
@@ -11,7 +14,10 @@
         {% endif %}
         {% if show.repeat_show %}
             {% set repeat_show = date_string_to_date(show.original_show_date) %}
-        <span class="show-repeat">Repeat: <a href="{{ url_for('get_shows_year_month_day', year=repeat_show.year, month=repeat_show.month, day=repeat_show.day) }}">{{ show.original_show_date }}</a></span>
+        <span class="show-repeat">Repeat: <a href="{{ url_for('get_show_year_month_day',
+                                                              year=repeat_show.year,
+                                                              month=repeat_show.month,
+                                                              day=repeat_show.day) }}">{{ show.original_show_date }}</a></span>
         {% endif %}
         <span class="show-nprlink"><a href="{{ url_for('npr_show_redirect', show_date=show.date) }}">NPR</a></span>
     </div>
@@ -38,7 +44,8 @@
             {% if show.host.guest %}
             Guest:
             {% endif %}
-            <a href="{{ url_for('get_hosts_details', host=show.host.slug) }}">{{ show.host.name }}</a>
+            <a href="{{ url_for('get_host_details',
+                                host=show.host.slug) }}">{{ show.host.name }}</a>
         {% else %}
             <span class="data-tbd">TBD</span>
         {% endif %}
@@ -49,7 +56,11 @@
             {% if show.scorekeeper.guest %}
             Guest:
             {% endif %}
-            <a href="{{ url_for('get_scorekeepers_details', scorekeeper=show.scorekeeper.slug) }}">{{ show.scorekeeper.name }}</a>
+            {% if show.scorekeeper.description %}
+            <q class="scorekeeper-description">{{ show.scorekeeper.description }}</q>
+            {% endif %}
+            <a href="{{ url_for('get_scorekeeper_details',
+                                scorekeeper=show.scorekeeper.slug) }}">{{ show.scorekeeper.name }}</a>
         {% else %}
             <span class="data-tbd">TBD</span>
         {% endif %}
@@ -65,13 +76,15 @@
                 <li>
                     {{ "%s:"|format(panelist.rank|rankify) if panelist.rank }}
                     {% if panelist.score %}
-                        <a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">{{ panelist.name }}</a> {{ panelist.score }}
+                        <a href="{{ url_for('get_panelist_details',
+                                            panelist=panelist.slug) }}">{{ panelist.name }}</a> {{ panelist.score }}
                         {% if panelist.lightning_round_start and panelist.lightning_round_correct %}
                             ({{ panelist.lightning_round_start}} / {{ panelist.lightning_round_correct}})
                         {% endif %}
                     {% else %}
                         {% if panelist.slug != 'multiple' %}
-                            <a href="{{ url_for('get_panelists_details', panelist=panelist.slug) }}">{{ panelist.name }}</a>
+                            <a href="{{ url_for('get_panelist_details',
+                                                panelist=panelist.slug) }}">{{ panelist.name }}</a>
                         {% else %}
                             <span class="data-multiple">Multiple Panelists</span>
                         {% endif %}
@@ -90,7 +103,8 @@
             <ul class="guest-list">
                 {% for guest in show.guests %}
                 <li>
-                    <a href="{{ url_for('get_guests_details', guest=guest.slug) }}">{{ guest.name }}</a>
+                    <a href="{{ url_for('get_guest_details',
+                                        guest=guest.slug) }}">{{ guest.name }}</a>
                     {{ "%s"|format(guest.score) if guest.score }}
                     {{ "*" if guest.score_exception }}
                 </li>
@@ -110,7 +124,8 @@
     <div class="col s12 m6">
         Chosen:
         {% if show.bluff.chosen_panelist %}
-            <a href="{{ url_for('get_panelists_details', panelist=show.bluff.chosen_panelist.slug) }}">{{ show.bluff.chosen_panelist.name }}</a>
+            <a href="{{ url_for('get_panelist_details',
+                                panelist=show.bluff.chosen_panelist.slug) }}">{{ show.bluff.chosen_panelist.name }}</a>
         {% else %}
             <span class="data-na">N/A</span>
         {% endif %}
@@ -118,7 +133,8 @@
     <div class="col s12 m6">
         Correct:
         {% if show.bluff.correct_panelist %}
-            <a href="{{ url_for('get_panelists_details', panelist=show.bluff.correct_panelist.slug) }}">{{ show.bluff.correct_panelist.name }}</a>
+            <a href="{{ url_for('get_panelist_details',
+                                panelist=show.bluff.correct_panelist.slug) }}">{{ show.bluff.correct_panelist.name }}</a>
         {% else %}
             <span class="data-na">N/A</span>
         {% endif %}

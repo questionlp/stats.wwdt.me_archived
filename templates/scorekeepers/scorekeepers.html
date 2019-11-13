@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Scorekeepers{% endblock %}
+
+{% block content %}
+<h1>Scorekeepers</h1>
+<p>
+    Choose from one of the scorekeepers below to view their appearance
+    details.
+</p>
+
+<ul class="collection">
+    {% for scorekeeper in scorekeepers %}
+    <li class="collection-item">
+        <a href="{{ url_for('get_scorekeeper_details',
+                            scorekeeper=scorekeeper.slug) }}">{{ scorekeeper.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

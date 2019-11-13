@@ -122,13 +122,17 @@ def get_guest():
 def get_guests():
     database_connection.reconnect()
     guests_list = ww_guest.info.retrieve_all(database_connection)
-    return render_template("guests/guests.html",
-                           guests=guests_list,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+
+    if guests_list:
+        return render_template("guests/guests.html",
+                               guests=guests_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for("index"))    
 
 @app.route("/guests/<string:guest>")
-def get_guests_details(guest: Text):
+def get_guest_details(guest: Text):
     database_connection.reconnect()
     guest_slug = slugify(guest)
     guest_details = ww_guest.details.retrieve_by_slug(guest_slug, database_connection)
@@ -143,7 +147,7 @@ def get_guests_details(guest: Text):
                                ga_property_code=ga_property_code,
                                rendered_at=generate_date_time_stamp())
     else:
-        return redirect(url_for('get_guests'))
+        return redirect(url_for("get_guests"))
 
 @app.route("/guests/all")
 def get_guests_all():
@@ -156,7 +160,7 @@ def get_guests_all():
                                ga_property_code=ga_property_code,
                                rendered_at=generate_date_time_stamp())
     else:
-        return redirect(url_for('get_guests'))
+        return redirect(url_for("get_guests"))
 
 #endregion
 
@@ -175,9 +179,11 @@ def get_hosts():
                                hosts=hosts_list,
                                ga_property_code=ga_property_code,
                                rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for("index"))
 
 @app.route("/hosts/<string:host>")
-def get_hosts_details(host: Text):
+def get_host_details(host: Text):
     database_connection.reconnect()
     host_slug = slugify(host)
     host_details = ww_host.details.retrieve_by_slug(host_slug, database_connection)
@@ -192,7 +198,7 @@ def get_hosts_details(host: Text):
                                ga_property_code=ga_property_code,
                                rendered_at=generate_date_time_stamp())
     else:
-        return redirect(url_for('get_hosts'))
+        return redirect(url_for("get_hosts"))
 
 @app.route("/hosts/all")
 def get_hosts_all():
@@ -205,7 +211,7 @@ def get_hosts_all():
                                ga_property_code=ga_property_code,
                                rendered_at=generate_date_time_stamp())
     else:
-        return redirect(url_for('get_hosts'))
+        return redirect(url_for("get_hosts"))
 
 #endregion
 
@@ -224,11 +230,11 @@ def get_panelists():
         #return render_template_string("<pre>{{p}}</pre>", p=json.dumps(panelists_list, indent=1))
 
 @app.route("/panelists/<string:panelist>")
-def get_panelists_details(panelist: Text):
+def get_panelist_details(panelist: Text):
     database_connection.reconnect()
     panelist_slug = slugify(panelist)
     if panelist != panelist_slug:
-        return redirect(url_for('get_panelists_details', panelist=panelist_slug))
+        return redirect(url_for("get_panelists_details", panelist=panelist_slug))
     panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug, database_connection)
     if panelist_details:
         return render_template("panelists/details.html", panelist=panelist_details)
@@ -243,17 +249,46 @@ def get_scorekeeper():
 
 @app.route("/scorekeepers")
 def get_scorekeepers():
-    return
+    database_connection.reconnect()
+    scorekeepers_list = ww_scorekeeper.info.retrieve_all(database_connection)
+    if scorekeepers_list:
+        return render_template("scorekeepers/scorekeepers.html",
+                               scorekeepers=scorekeepers_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for("index"))
 
 @app.route("/scorekeepers/<string:scorekeeper>")
-def get_scorekeepers_details(scorekeeper: Text):
+def get_scorekeeper_details(scorekeeper: Text):
     database_connection.reconnect()
     scorekeeper_slug = slugify(scorekeeper)
     scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug, database_connection)
+
     if scorekeeper_details:
-        return render_template_string("{{ sk }}", sk=json.dumps(scorekeeper_details))
+        scorekeepers = []
+        scorekeepers.append(scorekeeper_details)
+        return render_template("scorekeepers/single.html",
+                               date_string_to_date=date_string_to_date,
+                               scorekeeper_name=scorekeeper_details["name"],
+                               scorekeepers=scorekeepers,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
     else:
-        return render_template_string("{{ sks }} not found", sks=scorekeeper_slug)
+        return redirect(url_for("get_scorekeepers"))
+
+@app.route("/scorekeepers/all")
+def get_scorekeepers_all():
+    database_connection.reconnect()
+    scorekeepers = ww_scorekeeper.details.retrieve_all(database_connection)
+    if scorekeepers:
+        return render_template("scorekeepers/all.html",
+                               date_string_to_date=date_string_to_date,
+                               scorekeepers=scorekeepers,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for("get_scorekeepers"))
 
 #endregion
 
@@ -267,10 +302,14 @@ def get_show():
 def get_shows():
     database_connection.reconnect()
     show_years = retrieve_show_years()
-    return render_template("shows/shows.html",
-                           show_years=show_years,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+
+    if show_years:
+        return render_template("shows/shows.html",
+                               show_years=show_years,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for("index"))
 
 @app.route("/shows/<int:year>")
 def get_shows_year(year: int):
@@ -296,7 +335,7 @@ def get_shows_year(year: int):
 def get_shows_date(show_date: Text):
     try:
         parsed_date = parser.parse(show_date)
-        return redirect(url_for("get_shows_year_month_day",
+        return redirect(url_for("get_show_year_month_day",
                                 date_string_to_date=date_string_to_date,
                                 year=parsed_date.year,
                                 month=parsed_date.month,
@@ -327,7 +366,7 @@ def get_shows_year_month(year: int, month: int):
         return redirect(url_for("get_shows_year", year=year))
 
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
-def get_shows_year_month_day(year: int, month: int, day: int):
+def get_show_year_month_day(year: int, month: int, day: int):
     try:
         database_connection.reconnect()
         show_list = []

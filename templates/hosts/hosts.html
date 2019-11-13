@@ -10,7 +10,7 @@
 <ul class="collection">
     {% for host in hosts %}
     <li class="collection-item">
-        <a href="{{ url_for('get_hosts_details', host=host.slug) }}">{{ host.name }}</a>
+        <a href="{{ url_for('get_host_details', host=host.slug) }}">{{ host.name }}</a>
     </li>
     {% endfor %}
 </ul>

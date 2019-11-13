@@ -2,7 +2,7 @@
 {% block title %}{{ today.isoformat() }} | Shows{% endblock %}
 
 {% block content %}
-<div class="show-breadcrumb">
+<div class="page-breadcrumb">
     <a href="{{ url_for('get_shows') }}">Shows</a> &gt;
     <a href="{{ url_for('get_shows_year', year=today.year) }}">{{ today.year }}</a> &gt;
     <a href="{{ url_for('get_shows_year_month', year=today.year, month=today.month) }}">{{ today.strftime("%B") }}</a>
