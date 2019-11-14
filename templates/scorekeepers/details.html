@@ -7,11 +7,19 @@
 <div class="row">
     <div class="col s12 l6">
         <div class="label">Appearances</div>
+        {% if scorekeeper.appearances.count %}
         {{ scorekeeper.appearances.count.regular_shows }}
+        {% else %}
+        <span class="data-na">N/A</span>
+        {% endif %}
     </div>
     <div class="col s12 l6">
         <div class="label">Appearances including Best Of and Repeats</div>
+        {% if scorekeeper.appearances.count %}
         {{ scorekeeper.appearances.count.all_shows }}
+        {% else %}
+        <span class="data-na">N/A</span>
+        {% endif %}
     </div>
 </div>
 
@@ -19,6 +27,7 @@
     <div class="col s12">
         <div class="scorekeeper-appearance-list">
             <div class="label">List of Appearances</div>
+            {% if scorekeeper.appearances.shows %}
             <ul class="scorekeeper-list">
             {% for appearance in scorekeeper.appearances.shows %}
                 {% set show_date = date_string_to_date(appearance.date) %}
@@ -28,21 +37,18 @@
                                         month=show_date.month,
                                         day=show_date.day) }}">
                     {{appearance.date}}</a>
-                {% if appearance.score and appearance.score_exception %}
-                    {{appearance.score }} *
-                {% elif appearance.score and not appearance.score_exception %}
-                    {{ appearance.score }}
-                {% endif %}
-                {% if appearance.best_of %}
-                    <span class="scorekeeper-show-bestof">Best Of</span>
-                {% endif %}
-                {% if appearance.repeat_show %}
-                    <span class="scorekeeper-show-repeat">Repeat</span>
-                {% endif %}
+                    {% if appearance.best_of %}
+                        <span class="scorekeeper-show-bestof">Best Of</span>
+                    {% endif %}
+                    {% if appearance.repeat_show %}
+                        <span class="scorekeeper-show-repeat">Repeat</span>
+                    {% endif %}
                 </li>
             {% endfor %}
             </ul>
-            
+            {% else %}
+            <span class="data-na">N/A</span>
+            {% endif %}
         </div>
     </div>
 </div>

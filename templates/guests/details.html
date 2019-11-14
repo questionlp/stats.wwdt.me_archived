@@ -7,11 +7,19 @@
 <div class="row">
     <div class="col s12 l6">
         <div class="label">Appearances</div>
+        {% if guest.appearances.count %}
         {{ guest.appearances.count.regular_shows }}
+        {% else %}
+        <span class="data-na">N/A</span>
+        {% endif %}
     </div>
     <div class="col s12 l6">
         <div class="label">Appearances including Best Of and Repeats</div>
+        {% if guest.appearances.count %}
         {{ guest.appearances.count.all_shows }}
+        {% else %}
+        <span class="data-na">N/A</span>
+        {% endif %}
     </div>
 </div>
 
@@ -19,7 +27,8 @@
     <div class="col s12">
         <div class="guest-appearance-list">
             <div class="label">List of Appearances</div>
-            <ul class="guest-list">
+            {% if guest.appearances.shows %}
+            <ul>
             {% for appearance in guest.appearances.shows %}
                 {% set show_date = date_string_to_date(appearance.date) %}
                 <li>
@@ -28,21 +37,23 @@
                                         month=show_date.month,
                                         day=show_date.day) }}">
                     {{appearance.date}}</a>
-                {% if appearance.score and appearance.score_exception %}
-                    {{appearance.score }} *
-                {% elif appearance.score and not appearance.score_exception %}
-                    {{ appearance.score }}
-                {% endif %}
-                {% if appearance.best_of %}
-                    <span class="guest-show-bestof">Best Of</span>
-                {% endif %}
-                {% if appearance.repeat_show %}
-                    <span class="guest-show-repeat">Repeat</span>
-                {% endif %}
+                    {% if appearance.score and appearance.score_exception %}
+                        {{appearance.score }} *
+                    {% elif appearance.score and not appearance.score_exception %}
+                        {{ appearance.score }}
+                    {% endif %}
+                    {% if appearance.best_of %}
+                        <span class="guest-show-bestof">Best Of</span>
+                    {% endif %}
+                    {% if appearance.repeat_show %}
+                        <span class="guest-show-repeat">Repeat</span>
+                    {% endif %}
                 </li>
             {% endfor %}
             </ul>
-            
+            {% else %}
+            <span class="data-na">N/A</span>
+            {% endif %}
         </div>
     </div>
 </div>

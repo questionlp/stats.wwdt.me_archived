@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ panelist_name }} | Panelists{% endblock %}
+
+{% block content %}
+<div class="page-breadcrumb">
+    <a href="{{ url_for('get_panelists') }}">Panelists</a>
+</div>
+
+<h1>Panelist Details</h1>
+
+{% include "panelists/details.html" %}
+{% endblock %}

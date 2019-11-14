@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Panelists{% endblock %}
+
+{% block content %}
+<h1>Panelists</h1>
+<p>
+    Choose from one of the panelists below to view their appearance details.
+</p>
+
+<ul class="collection">
+    {% for panelist in panelists %}
+    <li class="collection-item">
+        <a href="{{ url_for('get_panelist_details', panelist=panelist.slug) }}">{{ panelist.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,84 +1,113 @@
+{% for panelist in panelists %}
+<h2><a href="{{ url_for('get_panelist_details',
+                        panelist=panelist.slug) }}"
+       title="Database ID: {{ panelist.id }}">{{ panelist.name }}</a></h2>
 
-<div class="panelist">
-    <h2>{{ panelist.name }}</h2>
-    <div class="panelist-appearances">
+<div class="panelist-block">
+<div class="row">
+    <div class="col s12 l6">
         <div class="label">Appearances</div>
-        {% if panelist.appearances %}
-        <ul>
+        {% if panelist.appearances.count %}
+        <ul class="panelist-stats">
             <li>Regular Shows: {{ panelist.appearances.count.regular_shows }}</li>
-            <li>Shows with Scores: {{ panelist.appearances.count.shows_with_scores }}</li>
             <li>All Shows: {{ panelist.appearances.count.all_shows }}</li>
-            <li>First Show: {{ panelist.appearances.milestones.first.show_date }}</li>
-            <li>Most Recent: {{ panelist.appearances.milestones.most_recent.show_date }}</li>
-        </ul>
-        {% endif %}
-    </div>
-
-    <div class="panelist-ranking">
-        <div class="label">Ranking</div>
-        {% if panelist.statistics.ranking %}
-        <ul>
-            <li>First: {{ panelist.statistics.ranking.rank.first }}
-                ({{ panelist.statistics.ranking.percentage.first}} %)
-            </li>
-            <li>First Tied: {{ panelist.statistics.ranking.rank.first_tied }}
-                ({{ panelist.statistics.ranking.percentage.first_tied}} %)
-            </li>
-            <li>Second: {{ panelist.statistics.ranking.rank.second }}
-                ({{ panelist.statistics.ranking.percentage.second}} %)
-            </li>
-            <li>Second Tied: {{ panelist.statistics.ranking.rank.second_tied }}
-                ({{ panelist.statistics.ranking.percentage.second_tied}} %)
-            </li>
-            <li>Third: {{ panelist.statistics.ranking.rank.third }}
-                ({{ panelist.statistics.ranking.percentage.third}} %)
-            </li>
+            <li>Shows with Scores: {{ panelist.appearances.count.shows_with_scores }}</li>
+            {% if panelist.appearances.milestones %}
+                {% set first_show = date_string_to_date(panelist.appearances.milestones.first.show_date) %}
+                <li>First Show: <a href="">{{ panelist.appearances.milestones.first.show_date }}</a></li>
+                {% set most_recent_show = date_string_to_date(panelist.appearances.milestones.most_recent.show_date) %}
+                <li>Most Recent Show: <a href="">{{ panelist.appearances.milestones.most_recent.show_date }}</a></li>
+            {% endif %}
         </ul>
         {% else %}
-        N/A
+        <span class="data-na">N/A</span>
         {% endif %}
     </div>
-
-    <div class="panelist-scoring">
+    <div class="col s12 l6">
         <div class="label">Scoring</div>
-        {% if panelist.statistics.scoring %}
-        <ul>
-            <li>Minimum: {{ panelist.statistics.scoring.minimum }}</li>
-            <li>Maximum: {{ panelist.statistics.scoring.maximum }}</li>
-            <li>Mean: {{ panelist.statistics.scoring.mean }}</li>
-            <li>Median: {{ panelist.statistics.scoring.standard_deviation }}</li>
-            <li>Total: {{ panelist.statistics.scoring.total }}</li>
-        </ul>
-        {% else %}
-        N/A
-        {% endif %}
+            {% if panelist.statistics %}
+            <ul class="panelist-stats">
+                <li>Minimum / Maximum: {{ panelist.statistics.scoring.minimum }}
+                    / {{ panelist.statistics.scoring.maximum }}</li>
+                <li>Mean: {{ panelist.statistics.scoring.mean }}</li>
+                <li>Median: {{ panelist.statistics.scoring.median }}</li>
+                <li>Standard Deviation: {{ panelist.statistics.scoring.standard_deviation }}</li>
+                <li>Total: {{ panelist.statistics.scoring.total }}</li>
+            </ul>
+            {% else %}
+                <span class="data-na">N/A</span>
+            {% endif %}
     </div>
+</div>
 
-    <div class="panelist-appearances">
-        <div class="label">Apperances</div>
-        <div>
-        <ul style="column-count: 3">
-            {% for appearance in panelist.appearances.shows %}
-            <li>
-                {% if appearance.score %}
-                <span class="show-date">{{ appearance.date }}:</span>
-                <span class="show-score">{{ appearance.score }}</span>
-                {% else %}
-                <span class="show-date">{{ appearance.date }}</span>
-                {% endif %}
-                {% if appearance.rank %}
-                <span class="show-rank">({{ appearance.rank|rankify }})</span>
-                {% endif %}
-                {% if appearance.best_of and appearance.repeat_show %}
-                <span class="show-best-of-repeat">(B/R)</span>
-                {% elif appearance.best_of %}
-                <span class="show-best-of">(B)</span>
-                {% elif appearance.repeat_show %}
-                <span class="show-repeat">(R)</span>
-                {% endif %}
-            </li>
-            {% endfor %}
+<div class="row">
+    <div class="col s12 l6">
+        <div class="label">Rankings</div>
+            {% if panelist.statistics %}
+            <ul class="panelist-stats">
+                <li>First: {{ panelist.statistics.ranking.rank.first }}
+                    ({{ panelist.statistics.ranking.percentage.first }} %)
+                </li>
+                <li>First Tied: {{ panelist.statistics.ranking.rank.first_tied }}
+                    ({{ panelist.statistics.ranking.percentage.first_tied }} %)
+                </li>
+                <li>Second: {{ panelist.statistics.ranking.rank.second }}
+                    ({{ panelist.statistics.ranking.percentage.second }} %)
+                </li>
+                <li>Second Tied: {{ panelist.statistics.ranking.rank.second_tied }}
+                    ({{ panelist.statistics.ranking.percentage.second_tied }} %)
+                </li>
+                <li>Third: {{ panelist.statistics.ranking.rank.third }}
+                    ({{ panelist.statistics.ranking.percentage.third }} %)
+                </li>
+            </ul>
+            {% else %}
+                <span class="data-na">N/A</span>
+            {% endif %}
+    </div>
+    <div class="col s12 l6">
+        <div class="label">Bluff (Incomplete)</div>
+        <ul class="panelist-stats">
+            <li>Chosen: {{ panelist.bluffs.chosen }}</li>
+            <li>Correct: {{ panelist.bluffs.correct }}</li>
         </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
+        <div class="panelist-appearance-list">
+            <div class="label">List of Appearances</div>
+            {% if panelist.appearances.shows %}
+            <ul class="panelist-list">
+            {% for appearance in panelist.appearances.shows %}
+                {% set show_date = date_string_to_date(appearance.date) %}
+                <li>
+                    <a href="{{ url_for('get_show_year_month_day',
+                                        year=show_date.year,
+                                        month=show_date.month,
+                                        day=show_date.day) }}">
+                    {{appearance.date}}</a>
+                    {% if appearance.score %}
+                        {{ appearance.score }}
+                        {% if appearance.rank %}
+                            ({{ appearance.rank|rankify }})
+                        {% endif %}
+                    {% endif %}
+                    {% if appearance.best_of %}
+                        <span class="scorekeeper-show-bestof">Best Of</span>
+                    {% endif %}
+                    {% if appearance.repeat_show %}
+                        <span class="scorekeeper-show-repeat">Repeat</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+            {% else %}
+            <span class="data-na">N/A</span>
+            {% endif %}
         </div>
     </div>
 </div>
+</div>
+{% endfor %}

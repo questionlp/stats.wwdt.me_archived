@@ -53,11 +53,11 @@
     <div class="col s12 m6">
         <div class="label">Scorekeeper</div>
         {% if show.scorekeeper.slug != "tbd" %}
+            {% if show.scorekeeper.description %}
+            <q class="scorekeeper-description">{{ show.scorekeeper.description }}</q><br>
+            {% endif %}
             {% if show.scorekeeper.guest %}
             Guest:
-            {% endif %}
-            {% if show.scorekeeper.description %}
-            <q class="scorekeeper-description">{{ show.scorekeeper.description }}</q>
             {% endif %}
             <a href="{{ url_for('get_scorekeeper_details',
                                 scorekeeper=show.scorekeeper.slug) }}">{{ show.scorekeeper.name }}</a>
