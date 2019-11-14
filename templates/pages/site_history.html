@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+
+{% block content %}
+<h2>History</h2>
+
+<p>
+    The first major version of the Stats Page debuted in July 2007 as a
+    single-page that was written in PHP and pulled data that was stored in a
+    MySQL database. Version 2.0 was an evolution of the first version that
+    included expanded panelist statistics and graphs. That said, as more
+    features and functionality were requested and added, there was a need
+    to re-develop the site.
+</p>
+
+<p>
+    For the second major version of the Stats Page, PHP and MySQL were used to
+    simplify porting over of the logic. The site's user experience and
+    underlying structure went through a major re-work; including: making use
+    of a rudimentary MVC (Model, View, Controller) application model and
+    making the site a little bit more mobile-friendly. That version, Version
+    3.0, was launched in 2014.
+</p>
+
+<p>
+    Over the past several years, there was a growing need to make the site's
+    user experience be focused on being mobile-first and to modernize the
+    entire stack.
+</p>
+
+<p>
+    The first step was to break out the data access layer to be its own project
+    and be reusable. While the database would still be hosted on a MySQL
+    database server (MariaDB to be specific), the language of choice moving
+    forward would be Python. Python was chosen due to the flexibiity of the
+    language and the strong set of built-in and third-party libraries available
+    for data analysis and building web applications and web APIs. Having a fair
+    amount of Python experience was also a big plus.
+</p>
+
+<p>
+    Once the new data access library, libwwdtm, was created and published, the
+    development of a Wait Wait Stats API was built using the new library and
+    Flask as a way to get more familiar with the framework.
+</p>
+{% endblock %}

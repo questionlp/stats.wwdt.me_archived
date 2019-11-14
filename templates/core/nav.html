@@ -14,10 +14,11 @@
         </ul>
 
         <ul id="dropdown-more" class="dropdown-content z-depth-0">
-            <li><a href="#">About</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('site_history') }}">Site History</a></li>
             <li><a href="//blog.wwdt.me/">Blog</a></li>
             <li><a href="//blog.wwdt.me/contact-me/">Contact Me</a></li>
-            <li><a href="#">Reports</a></li>
+            <li><a href="//reports.wwdt.me/">Reports</a></li>
         </ul>
 
         <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -51,10 +52,11 @@
 
         <li><div class="divider"></div></li>
 
-        <li><a href="#">About</a></li>
+        <li><a href="{{ url_for('about') }}">About</a></li>
+        <li><a href="{{ url_for('site_history') }}">Site History</a></li>
         <li><a href="//blog.wwdt.me/">Blog</a></li>
         <li><a href="//blog.wwdt.me/contact-me/">Contact Me</a></li>
-        <li><a href="#">Reports</a></li>
+        <li><a href="//reports.wwdt.me/">Reports</a></li>
     </ul>
 </div>
 <!-- End Navigation -->

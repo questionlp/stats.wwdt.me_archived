@@ -7,7 +7,6 @@ from datetime import date, datetime
 from dateutil import parser
 import json
 import pytz
-import sys
 from typing import Optional, Text
 
 from flask import (Flask, abort, redirect, render_template,
@@ -97,16 +96,33 @@ def error_500(error):
 def get_location():
     return redirect(url_for("index"))
 
-#region Default Routes
+#region Default Route
 @app.route("/")
 def index():
     database_connection.reconnect()
     recent_shows = ww_show.details.retrieve_recent(database_connection)
     recent_shows.reverse()
-    return render_template("index.html",
+    return render_template("pages/index.html",
                            date_string_to_date=date_string_to_date,
                            show_years=retrieve_show_years(),
                            shows=recent_shows,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
+
+#endregion
+
+#region Site Information Routes
+@app.route("/about")
+def about():
+    database_connection.reconnect()
+    return render_template("pages/about.html",
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp())
+
+@app.route("/site-history")
+def site_history():
+    database_connection.reconnect()
+    return render_template("pages/site_history.html",
                            ga_property_code=ga_property_code,
                            rendered_at=generate_date_time_stamp())
 
