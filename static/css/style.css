@@ -25,15 +25,17 @@
     .database-id { background-color: #37474f; color: #eceff1; }
     .scorekeeper-emeritus { background-color: #c5cae9; }
     .database-id, .show-bestof, .show-repeat, .scorekeeper-emeritus, .show-nprlink { font-weight: 500; padding: 0.25rem 1rem; margin-right: 0.5rem; }    
+    ul.footer-nav-links { list-style: none; margin: 0; padding: 0; }
+    ul.footer-nav-links li { display: inline; margin: 0 0.5rem; padding: 0; }
     .guest-appearance-list>ul, .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 2; column-fill: balance; column-rule: 1px dotted rgba(0, 0, 0, 0.25); line-height: 2.5; list-style: none; margin: 0; padding: 0; }
     .guest-show-bestof, .guest-show-repeat, .host-show-bestof, .host-show-repeat, .panelist-show-bestof, .panelist-show-repeat, .scorekeeper-show-bestof, .scorekeeper-show-repeat { font-weight: 500; padding: 0.2rem 0.5rem; margin: 0 0.25rem; }
     .guest-block, .host-block, .panelist-block, .scorekeeper-block, .show-block { border-left: 4px solid rgba(0, 0, 0, 0.25); margin: 1rem 0 2.25rem; }
     .guest-block a, .host-block a, .panelist-block a, .scorekeeper-block a, .show-block a { border-bottom: 1px dotted; }
     .guest-block a::after, .host-block a::after, .panelist-block a::after, .scorekeeper-block a::after, .show-block a::after { content: " \2192"; }
-    .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
     .guest-show-bestof, .host-show-bestof, .panelist-show-bestof, .scorekeeper-show-bestof, .show-bestof { background-color: #bbdefb; }
     .guest-show-repeat, .host-show-repeat, .panelist-show-repeat, .scorekeeper-show-repeat, .show-repeat { background-color: #ffe0b2; }
     .guest-show-repeat>a, .host-show-repeat>a, .panelist-show-repeat>a, .scorekeeper-show-repeat>a { border-bottom: none !important; }
+    .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
     q.scorekeeper-description { font-style: italic; }
     .show-description, .show-notes { white-space: pre-line; }
     .show-repeat>a { border-bottom: none !important; }
@@ -63,7 +65,6 @@
     .database-id, .show-nprlink>a { border-bottom: none !important; color: white !important; }
     .show-repeat>a { color: #26323b !important; }
     .sidenav, .sidenav ul, ul.dropdown-content { background-color: #26323b !important; }
-    
 }
 
 @media only screen and (max-width: 1024px) {

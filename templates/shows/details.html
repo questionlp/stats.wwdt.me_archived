@@ -1,5 +1,5 @@
 {% for show in shows %}
-{% set show_date = date_string_to_date(show.date) %}
+{% set show_date = date_string_to_date(date_string=show.date) %}
 <h2><a href="{{ url_for('get_show_year_month_day',
                         year=show_date.year,
                         month=show_date.month,
@@ -12,7 +12,7 @@
         <span class="show-bestof">Best Of</span>
         {% endif %}
         {% if show.repeat_show %}
-            {% set repeat_show = date_string_to_date(show.original_show_date) %}
+            {% set repeat_show = date_string_to_date(date_string=show.original_show_date) %}
         <span class="show-repeat">Repeat: <a href="{{ url_for('get_show_year_month_day',
                                                               year=repeat_show.year,
                                                               month=repeat_show.month,

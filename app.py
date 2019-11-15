@@ -4,21 +4,24 @@
 """Flask application startup file"""
 
 from datetime import date, datetime
-from dateutil import parser
 import json
-import pytz
+from typing import Text
 import traceback
-from typing import Optional, Text
 
-from flask import (Flask, abort, redirect, render_template,
-                   render_template_string, request, url_for)
+from dateutil import parser
+from flask import Flask, redirect, render_template, url_for
 from flask.logging import create_logger
-
 import mysql.connector
+import pytz
 from slugify import slugify
 from werkzeug.exceptions import HTTPException
 from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
+
+#region Global Constants
+APP_VERSION = "0.9.0"
+
+#endregion
 
 #region Flask App Initialization
 app = Flask(__name__)
@@ -26,7 +29,7 @@ app.url_map.strict_slashes = False
 app_logger = create_logger(app)
 
 # Override base Jinja options
-jinja_options = Flask.jinja_options.copy()
+app.jinja_options = Flask.jinja_options.copy()
 app.jinja_options.update({"trim_blocks": True, "lstrip_blocks": True})
 app.create_jinja_environment()
 
@@ -35,23 +38,18 @@ app.create_jinja_environment()
 #region Bootstrap Functions
 def load_config():
     """Load configuration settings from config.json"""
-    global ga_property_code
-
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
-
-    # Set the ga_property_code global variable
-    ga_property_code = config_dict["settings"]["ga_property_code"]
 
     return config_dict
 
 #endregion
 
 #region Common Functions
-def generate_date_time_stamp():
+def generate_date_time_stamp(time_zone: pytz.timezone = pytz.timezone("UTC")):
     """Generate a current date/timestamp string"""
     now = datetime.now(time_zone)
-    return now.strftime("%A, %B %d, %Y %H:%M:%S %Z")
+    return now.strftime("%Y-%m-%d %H:%M:%S %Z")
 
 def retrieve_show_years(reverse_order: bool = True):
     """Retrieve list of available show years"""
@@ -62,12 +60,13 @@ def retrieve_show_years(reverse_order: bool = True):
 
     return years
 
-def date_string_to_date(date_string: Text):
+def date_string_to_date(**kwargs):
     """Used to convert an ISO-style date string into a datetime object"""
     try:
-        date_object = parser.parse(date_string)
-        return date_object
-    except:
+        if "date_string" in kwargs:
+            date_object = parser.parse(kwargs["date_string"])
+            return date_object
+    except ValueError:
         return None
 
 #endregion
@@ -105,9 +104,7 @@ def handle_exception(error):
     error_traceback = traceback.format_exc()
     app_logger.error(error_traceback)
     return render_template("errors/500.html",
-                           error_traceback=error_traceback,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp()), 500
+                           error_traceback=error_traceback), 500
 
 #endregion
 
@@ -125,10 +122,7 @@ def index():
     recent_shows = ww_show.details.retrieve_recent(database_connection)
     recent_shows.reverse()
     return render_template("pages/index.html",
-                           date_string_to_date=date_string_to_date,
-                           shows=recent_shows,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+                           shows=recent_shows)
 
 #endregion
 
@@ -136,16 +130,12 @@ def index():
 @app.route("/about")
 def about():
     """About Page"""
-    return render_template("pages/about.html",
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+    return render_template("pages/about.html")
 
 @app.route("/site-history")
 def site_history():
     """Site History Page"""
-    return render_template("pages/site_history.html",
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+    return render_template("pages/site_history.html")
 
 #endregion
 
@@ -164,9 +154,7 @@ def get_guests():
 
     if guests_list:
         return render_template("guests/guests.html",
-                               guests=guests_list,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               guests=guests_list)
     else:
         return redirect(url_for("index"))
 
@@ -179,19 +167,16 @@ def get_guest_details(guest: Text):
         return redirect(url_for("get_guest_details", guest=guest_slug))
 
     database_connection.reconnect()
-    guest_details = ww_guest.details.retrieve_by_slug(guest_slug=guest_slug,
-                                                      database_connection=database_connection)
+    guest_details = ww_guest.details.retrieve_by_slug(guest_slug,
+                                                      database_connection)
 
     if guest_details:
         # Template expects a list of guests(s)
         guests = []
         guests.append(guest_details)
         return render_template("guests/single.html",
-                               date_string_to_date=date_string_to_date,
                                guest_name=guest_details["name"],
-                               guests=guests,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               guests=guests)
     else:
         return redirect(url_for("get_guests"))
 
@@ -204,10 +189,7 @@ def get_guests_all():
 
     if guests:
         return render_template("guests/all.html",
-                               date_string_to_date=date_string_to_date,
-                               guests=guests,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               guests=guests)
     else:
         return redirect(url_for("get_guests"))
 
@@ -228,9 +210,7 @@ def get_hosts():
 
     if hosts_list:
         return render_template("hosts/hosts.html",
-                               hosts=hosts_list,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               hosts=hosts_list)
     else:
         return redirect(url_for("index"))
 
@@ -239,19 +219,16 @@ def get_host_details(host: Text):
     """Presents appearance details for a show host"""
     database_connection.reconnect()
     host_slug = slugify(host)
-    host_details = ww_host.details.retrieve_by_slug(host_slug=host_slug,
-                                                    database_connection=database_connection)
+    host_details = ww_host.details.retrieve_by_slug(host_slug,
+                                                    database_connection)
 
     if host_details:
         # Template expects a list of hosts(s)
         hosts = []
         hosts.append(host_details)
         return render_template("hosts/single.html",
-                               date_string_to_date=date_string_to_date,
                                host_name=host_details["name"],
-                               hosts=hosts,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               hosts=hosts)
     else:
         return redirect(url_for("get_hosts"))
 
@@ -263,10 +240,7 @@ def get_hosts_all():
 
     if hosts:
         return render_template("hosts/all.html",
-                               date_string_to_date=date_string_to_date,
-                               hosts=hosts,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               hosts=hosts)
     else:
         return redirect(url_for("get_hosts"))
 
@@ -287,9 +261,7 @@ def get_panelists():
 
     if panelist_list:
         return render_template("panelists/panelists.html",
-                               panelists=panelist_list,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               panelists=panelist_list)
     else:
         return redirect(url_for("index"))
 
@@ -298,19 +270,16 @@ def get_panelist_details(panelist: Text):
     """Presents statistics and appearance details for a panelist"""
     database_connection.reconnect()
     panelist_slug = slugify(panelist)
-    panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug=panelist_slug,
-                                                            database_connection=database_connection)
+    panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug,
+                                                            database_connection)
 
     if panelist_details:
         # Template expects a list of panelists(s)
         panelists = []
         panelists.append(panelist_details)
         return render_template("panelists/single.html",
-                               date_string_to_date=date_string_to_date,
                                panelist_name=panelist_details["name"],
-                               panelists=panelists,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               panelists=panelists)
     else:
         return redirect(url_for("get_panelists"))
 
@@ -322,10 +291,7 @@ def get_panelists_all():
 
     if panelists:
         return render_template("panelists/all.html",
-                               date_string_to_date=date_string_to_date,
-                               panelists=panelists,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               panelists=panelists)
     else:
         return redirect(url_for("get_panelists"))
 
@@ -345,9 +311,7 @@ def get_scorekeepers():
     scorekeepers_list = ww_scorekeeper.info.retrieve_all(database_connection)
     if scorekeepers_list:
         return render_template("scorekeepers/scorekeepers.html",
-                               scorekeepers=scorekeepers_list,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               scorekeepers=scorekeepers_list)
     else:
         return redirect(url_for("index"))
 
@@ -356,19 +320,16 @@ def get_scorekeeper_details(scorekeeper: Text):
     """Presents appearance details for a scorekeeper"""
     database_connection.reconnect()
     scorekeeper_slug = slugify(scorekeeper)
-    scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug=scorekeeper_slug,
-                                                                  database_connection=database_connection)
+    scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug,
+                                                                  database_connection)
 
     if scorekeeper_details:
         # Template expects a list of scorekeepers(s)
         scorekeepers = []
         scorekeepers.append(scorekeeper_details)
         return render_template("scorekeepers/single.html",
-                               date_string_to_date=date_string_to_date,
                                scorekeeper_name=scorekeeper_details["name"],
-                               scorekeepers=scorekeepers,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               scorekeepers=scorekeepers)
     else:
         return redirect(url_for("get_scorekeepers"))
 
@@ -379,10 +340,7 @@ def get_scorekeepers_all():
     scorekeepers = ww_scorekeeper.details.retrieve_all(database_connection)
     if scorekeepers:
         return render_template("scorekeepers/all.html",
-                               date_string_to_date=date_string_to_date,
-                               scorekeepers=scorekeepers,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               scorekeepers=scorekeepers)
     else:
         return redirect(url_for("get_scorekeepers"))
 
@@ -403,9 +361,7 @@ def get_shows():
 
     if show_years:
         return render_template("shows/shows.html",
-                               show_years=show_years,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               show_years=show_years)
     else:
         return redirect(url_for("index"))
 
@@ -421,11 +377,8 @@ def get_shows_year(year: int):
         months.append(date(year=year, month=month, day=1))
 
     return render_template("shows/year.html",
-                           date_string_to_date=date_string_to_date,
                            year=date_year,
-                           show_months=months,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+                           show_months=months)
 
 @app.route("/shows/<string:show_date>")
 def get_shows_date(show_date: Text):
@@ -434,12 +387,11 @@ def get_shows_date(show_date: Text):
     try:
         parsed_date = parser.parse(show_date)
         return redirect(url_for("get_show_year_month_day",
-                                date_string_to_date=date_string_to_date,
                                 year=parsed_date.year,
                                 month=parsed_date.month,
                                 day=parsed_date.day,
                                 ), code=301)
-    except:
+    except ValueError:
         return redirect(url_for("get_shows"))
 
 @app.route("/shows/<int:year>/<int:month>")
@@ -454,11 +406,8 @@ def get_shows_year_month(year: int, month: int):
         return redirect(url_for("index"))
 
     return render_template("shows/year_month.html",
-                           date_string_to_date=date_string_to_date,
                            year_month=year_month,
-                           shows=show_list,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+                           shows=show_list)
 
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
 def get_show_year_month_day(year: int, month: int, day: int):
@@ -474,11 +423,8 @@ def get_show_year_month_day(year: int, month: int, day: int):
         show_list = []
         show_list.append(details)
         return render_template("shows/single.html",
-                               date_string_to_date=date_string_to_date,
                                today=today,
-                               shows=show_list,
-                               ga_property_code=ga_property_code,
-                               rendered_at=generate_date_time_stamp())
+                               shows=show_list)
     else:
         return redirect(url_for("get_shows"))
 
@@ -487,16 +433,13 @@ def get_shows_year_all(year: int):
     """Presents details for all shows available"""
     database_connection.reconnect()
     shows_list = ww_show.details.retrieve_by_year(show_year=year,
-                                                    database_connection=database_connection)
+                                                  database_connection=database_connection)
     if not shows_list:
         return redirect(url_for("get_shows_year", year=year))
 
     return render_template("shows/year_all.html",
-                           date_string_to_date=date_string_to_date,
                            year=year,
-                           shows=shows_list,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+                           shows=shows_list)
 
 @app.route("/shows/recent")
 def get_shows_recent():
@@ -512,7 +455,7 @@ def get_shows_recent():
 def npr_show_redirect(show_date: Text):
     """Takes an ISO-like date string and redirects to the appropriate
     show page on NPR's website."""
-    show_date_object = date_string_to_date(show_date)
+    show_date_object = date_string_to_date(date_string=show_date)
 
     if not show_date_object:
         return redirect(url_for("index"))
@@ -538,11 +481,14 @@ def npr_show_redirect(show_date: Text):
 #endregion
 
 #region Application Initialization
-config_dict = load_config()
-ga_property_code = config_dict["settings"]["ga_property_code"]
-database_connection = mysql.connector.connect(**config_dict["database"])
+config = load_config()
+app.jinja_env.globals["app_version"] = APP_VERSION
+app.jinja_env.globals["current_date"] = date.today()
+app.jinja_env.globals["date_string_to_date"] = date_string_to_date
+app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
+app.jinja_env.globals["rendered_at"] = generate_date_time_stamp()
+database_connection = mysql.connector.connect(**config["database"])
 database_connection.autocommit = True
-time_zone = pytz.timezone("America/Los_Angeles")
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port="9248")

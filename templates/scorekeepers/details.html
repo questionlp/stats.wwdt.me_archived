@@ -38,7 +38,7 @@
             {% if scorekeeper.appearances.shows %}
             <ul class="scorekeeper-list">
             {% for appearance in scorekeeper.appearances.shows %}
-                {% set show_date = date_string_to_date(appearance.date) %}
+                {% set show_date = date_string_to_date(date_string=appearance.date) %}
                 <li>
                     <a href="{{ url_for('get_show_year_month_day',
                                         year=show_date.year,

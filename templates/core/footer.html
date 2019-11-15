@@ -1,16 +1,20 @@
 <footer class="page-footer blue darken-4">
     <div class="container">
         <div class="row">
-            <div class="col s12">Page generated on {{ rendered_at }}.</div>
+            <div class="col s12">
+                <ul class="right footer-nav-links">
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('site_history') }}">Site History</a></li>
+                    <li><a href="//blog.wwdt.me/">Blog</a></li>
+                    <li><a href="//reports.wwdt.me/">Reports</a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="footer-copyright">
         <div class="container">
-            <div>Copyright &copy; 2019 <a href="http://linhpham.org/">Linh Pham</a>. All rights reserved.</div>
-            <div>Source code for this project is available on
-            <a href="https://github.com/questionlp/stats.wwdt.me">GitHub</a>
-            under <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache
-            License 2.0</a></div>
+            &copy; 2007&ndash;{{ current_date.year }} <a href="http://linhpham.org/">Linh Pham</a> All rights reserved
+            <span class="right">R: {{ rendered_at }} | V: {{ app_version }}</span>
         </div>
     </div>
 </footer>
