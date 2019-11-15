@@ -1,9 +1,14 @@
 {% for panelist in panelists %}
 <h2><a href="{{ url_for('get_panelist_details',
-                        panelist=panelist.slug) }}"
-       title="Database ID: {{ panelist.id }}">{{ panelist.name }}</a></h2>
+                        panelist=panelist.slug) }}">{{ panelist.name }}</a></h2>
 
 <div class="panelist-block">
+<div class="row panelist-badges">
+    <div class="col s12">
+        <span class="database-id">ID: {{ panelist.id }}</span>
+    </div>
+</div>
+
 <div class="row">
     <div class="col s12 l6">
         <div class="label">Appearances</div>
@@ -14,9 +19,19 @@
             <li>Shows with Scores: {{ panelist.appearances.count.shows_with_scores }}</li>
             {% if panelist.appearances.milestones %}
                 {% set first_show = date_string_to_date(panelist.appearances.milestones.first.show_date) %}
-                <li>First Show: <a href="">{{ panelist.appearances.milestones.first.show_date }}</a></li>
+                <li>First Show: <a href="{{ url_for('get_show_year_month_day',
+                                                    year=first_show.year,
+                                                    month=first_show.month,
+                                                    day=first_show.day) }}">
+                    {{ panelist.appearances.milestones.first.show_date }}</a>
+                </li>
                 {% set most_recent_show = date_string_to_date(panelist.appearances.milestones.most_recent.show_date) %}
-                <li>Most Recent Show: <a href="">{{ panelist.appearances.milestones.most_recent.show_date }}</a></li>
+                <li>Most Recent Show: <a href="{{ url_for('get_show_year_month_day',
+                                                          year=most_recent_show.year,
+                                                          month=most_recent_show.month,
+                                                          day=most_recent_show.day) }}">
+                    {{ panelist.appearances.milestones.most_recent.show_date }}</a>
+                </li>
             {% endif %}
         </ul>
         {% else %}

@@ -7,18 +7,24 @@ from datetime import date, datetime
 from dateutil import parser
 import json
 import pytz
+import sys
+import traceback
 from typing import Optional, Text
 
 from flask import (Flask, abort, redirect, render_template,
                    render_template_string, request, url_for)
+from flask.logging import create_logger
+
 import mysql.connector
 from slugify import slugify
+from werkzeug.exceptions import HTTPException
 from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Flask App Initialization
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+app_logger = create_logger(app)
 
 # Override base Jinja options
 jinja_options = Flask.jinja_options.copy()
@@ -59,9 +65,10 @@ def retrieve_show_years(reverse_order: bool = True):
     return years
 
 def date_string_to_date(date_string: Text):
+    """Used to convert an ISO-style date string into a datetime object"""
     try:
-        date = parser.parse(date_string)
-        return date
+        date_object = parser.parse(date_string)
+        return date_object
     except:
         return None
 
@@ -70,6 +77,7 @@ def date_string_to_date(date_string: Text):
 #region Filters
 @app.template_filter("rankify")
 def panelist_rank_format(rank: Text):
+    """Convert panelist ranking shorthand into full rank name"""
     rank_label = {
         "1": "First",
         "1t": "First Tied",
@@ -81,24 +89,40 @@ def panelist_rank_format(rank: Text):
 
 @app.template_filter("pretty_jsonify")
 def pretty_jsonify(data):
+    """Returns a prettier JSON output for an object than Flask's default
+    tojson filter"""
     return json.dumps(data, indent=2)
 
 #endregion
 
-#region Error Routes
-def error_500(error):
-    return render_template_string(error)
+#region Error Handlers
+@app.errorhandler(Exception)
+def handle_exception(error):
+    """Handle exceptions in a slightly more graceful manner"""
+    # Pass through any HTTP errors and exceptions
+    if isinstance(error, HTTPException):
+        return error
+
+    # Handle everything else with a basic 500 error page
+    error_traceback = traceback.format_exc()
+    app_logger.error(error_traceback)
+    return render_template("errors/500.html",
+                           error_traceback=error_traceback,
+                           ga_property_code=ga_property_code,
+                           rendered_at=generate_date_time_stamp()), 500
 
 #endregion
 
 #region General Redirect Routes
 @app.route("/location")
 def get_location():
+    """Placeholder for future show location view"""
     return redirect(url_for("index"))
 
 #region Default Route
 @app.route("/")
 def index():
+    """Default page that includes details for recent shows"""
     database_connection.reconnect()
     recent_shows = ww_show.details.retrieve_recent(database_connection)
     recent_shows.reverse()
@@ -114,14 +138,14 @@ def index():
 #region Site Information Routes
 @app.route("/about")
 def about():
-    database_connection.reconnect()
+    """About Page"""
     return render_template("pages/about.html",
                            ga_property_code=ga_property_code,
                            rendered_at=generate_date_time_stamp())
 
 @app.route("/site-history")
 def site_history():
-    database_connection.reconnect()
+    """Site History Page"""
     return render_template("pages/site_history.html",
                            ga_property_code=ga_property_code,
                            rendered_at=generate_date_time_stamp())
@@ -132,10 +156,12 @@ def site_history():
 #region Guest Routes
 @app.route("/guest")
 def get_guest():
+    """Redirect /guest to /guests"""
     return redirect(url_for("get_guests"), code=301)
 
 @app.route("/guests")
 def get_guests():
+    """Presents a list of Not My Job guests"""
     database_connection.reconnect()
     guests_list = ww_guest.info.retrieve_all(database_connection)
 
@@ -147,14 +173,20 @@ def get_guests():
     else:
         return redirect(url_for("index"))
 
+
 @app.route("/guests/<string:guest>")
 def get_guest_details(guest: Text):
-    database_connection.reconnect()
+    """Presents appearance details for a Not My Job guest"""
     guest_slug = slugify(guest)
+    if guest and guest != guest_slug:
+        return redirect(url_for("get_guest_details", guest=guest_slug))
+
+    database_connection.reconnect()
     guest_details = ww_guest.details.retrieve_by_slug(guest_slug=guest_slug,
-                                                        database_connection=database_connection)
+                                                      database_connection=database_connection)
 
     if guest_details:
+        # Template expects a list of guests(s)
         guests = []
         guests.append(guest_details)
         return render_template("guests/single.html",
@@ -166,8 +198,10 @@ def get_guest_details(guest: Text):
     else:
         return redirect(url_for("get_guests"))
 
+
 @app.route("/guests/all")
 def get_guests_all():
+    """Presents appearance details for all Not My Job guests"""
     database_connection.reconnect()
     guests = ww_guest.details.retrieve_all(database_connection)
 
@@ -186,10 +220,12 @@ def get_guests_all():
 #region Host Routes
 @app.route("/host")
 def get_host():
+    """Redirect /host to /hosts"""
     return redirect(url_for("get_hosts"), code=301)
 
 @app.route("/hosts")
 def get_hosts():
+    """Presents a list of show hosts"""
     database_connection.reconnect()
     hosts_list = ww_host.info.retrieve_all(database_connection)
 
@@ -203,12 +239,14 @@ def get_hosts():
 
 @app.route("/hosts/<string:host>")
 def get_host_details(host: Text):
+    """Presents appearance details for a show host"""
     database_connection.reconnect()
     host_slug = slugify(host)
     host_details = ww_host.details.retrieve_by_slug(host_slug=host_slug,
                                                     database_connection=database_connection)
 
     if host_details:
+        # Template expects a list of hosts(s)
         hosts = []
         hosts.append(host_details)
         return render_template("hosts/single.html",
@@ -222,6 +260,7 @@ def get_host_details(host: Text):
 
 @app.route("/hosts/all")
 def get_hosts_all():
+    """Presents appearance details for all show hosts"""
     database_connection.reconnect()
     hosts = ww_host.details.retrieve_all(database_connection)
 
@@ -240,10 +279,12 @@ def get_hosts_all():
 #region Panelist Routes
 @app.route("/panelist")
 def get_panelist():
+    """Redirect /panelist to /panelists"""
     return redirect(url_for("get_panelists"), code=301)
 
 @app.route("/panelists")
 def get_panelists():
+    """Presents a list of panelists"""
     database_connection.reconnect()
     panelist_list = ww_panelist.info.retrieve_all(database_connection)
 
@@ -257,12 +298,14 @@ def get_panelists():
 
 @app.route("/panelists/<string:panelist>")
 def get_panelist_details(panelist: Text):
+    """Presents statistics and appearance details for a panelist"""
     database_connection.reconnect()
     panelist_slug = slugify(panelist)
     panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug=panelist_slug,
                                                             database_connection=database_connection)
 
     if panelist_details:
+        # Template expects a list of panelists(s)
         panelists = []
         panelists.append(panelist_details)
         return render_template("panelists/single.html",
@@ -276,6 +319,7 @@ def get_panelist_details(panelist: Text):
 
 @app.route("/panelists/all")
 def get_panelists_all():
+    """Presents statistics and appearance details for all panelists"""
     database_connection.reconnect()
     panelists = ww_panelist.details.retrieve_all(database_connection)
 
@@ -294,10 +338,12 @@ def get_panelists_all():
 #region Scorekeeper Routes
 @app.route("/scorekeeper")
 def get_scorekeeper():
+    """Redirect /scorekeeper to /scorekeepers"""
     return redirect(url_for("get_scorekeepers"), code=301)
 
 @app.route("/scorekeepers")
 def get_scorekeepers():
+    """Presents a list of scorekeepers"""
     database_connection.reconnect()
     scorekeepers_list = ww_scorekeeper.info.retrieve_all(database_connection)
     if scorekeepers_list:
@@ -310,12 +356,14 @@ def get_scorekeepers():
 
 @app.route("/scorekeepers/<string:scorekeeper>")
 def get_scorekeeper_details(scorekeeper: Text):
+    """Presents appearance details for a scorekeeper"""
     database_connection.reconnect()
     scorekeeper_slug = slugify(scorekeeper)
     scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug=scorekeeper_slug,
-                                                                    database_connection=database_connection)
+                                                                  database_connection=database_connection)
 
     if scorekeeper_details:
+        # Template expects a list of scorekeepers(s)
         scorekeepers = []
         scorekeepers.append(scorekeeper_details)
         return render_template("scorekeepers/single.html",
@@ -329,6 +377,7 @@ def get_scorekeeper_details(scorekeeper: Text):
 
 @app.route("/scorekeepers/all")
 def get_scorekeepers_all():
+    """Presents appearance details for all scorekeepers"""
     database_connection.reconnect()
     scorekeepers = ww_scorekeeper.details.retrieve_all(database_connection)
     if scorekeepers:
@@ -339,16 +388,19 @@ def get_scorekeepers_all():
                                rendered_at=generate_date_time_stamp())
     else:
         return redirect(url_for("get_scorekeepers"))
+
 #endregion
 
 
 #region Show Routes
 @app.route("/show")
 def get_show():
+    """Redirect /show to /shows"""
     return redirect(url_for("get_shows"), code=301)
 
 @app.route("/shows")
 def get_shows():
+    """Presents a list of available show years"""
     database_connection.reconnect()
     show_years = retrieve_show_years()
 
@@ -362,6 +414,7 @@ def get_shows():
 
 @app.route("/shows/<int:year>")
 def get_shows_year(year: int):
+    """Presents a list of available show months for a given year"""
     database_connection.reconnect()
     date_year = date(year=year, month=1, day=1)
     show_months = ww_show.info.retrieve_months_by_year(show_year=year,
@@ -379,6 +432,8 @@ def get_shows_year(year: int):
 
 @app.route("/shows/<string:show_date>")
 def get_shows_date(show_date: Text):
+    """Convert an ISO-like date string into a datetime value and
+    redirect the request with the parsed year, month and day"""
     parsed_date = parser.parse(show_date)
     return redirect(url_for("get_show_year_month_day",
                             date_string_to_date=date_string_to_date,
@@ -389,6 +444,7 @@ def get_shows_date(show_date: Text):
 
 @app.route("/shows/<int:year>/<int:month>")
 def get_shows_year_month(year: int, month: int):
+    """Presents a list of available shows for a given year and month"""
     database_connection.reconnect()
     year_month = date(year=year, month=month, day=1)
     show_list = ww_show.details.retrieve_by_year_month(show_year=year,
@@ -407,30 +463,33 @@ def get_shows_year_month(year: int, month: int):
 
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
 def get_show_year_month_day(year: int, month: int, day: int):
+    """Presents show details for a given year, month and day"""
     database_connection.reconnect()
-    show_list = []
     today = date(year=year, month=month, day=day)
     details = ww_show.details.retrieve_by_date(show_year=year,
                                                show_month=month,
                                                show_day=day,
                                                database_connection=database_connection)
-    if not details:
-        return redirect(url_for("index"))
-
-    show_list.append(details)
-    return render_template("shows/single.html",
-                           date_string_to_date=date_string_to_date,
-                           show_years=retrieve_show_years(),
-                           today=today,
-                           shows=show_list,
-                           ga_property_code=ga_property_code,
-                           rendered_at=generate_date_time_stamp())
+    if details:
+        # Template expects a list of show(s)
+        show_list = []
+        show_list.append(details)
+        return render_template("shows/single.html",
+                               date_string_to_date=date_string_to_date,
+                               show_years=retrieve_show_years(),
+                               today=today,
+                               shows=show_list,
+                               ga_property_code=ga_property_code,
+                               rendered_at=generate_date_time_stamp())
+    else:
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/<int:year>/all")
 def get_shows_year_all(year: int):
+    """Presents details for all shows available"""
     database_connection.reconnect()
     shows_list = ww_show.details.retrieve_by_year(show_year=year,
-                                                  database_connection=database_connection)
+                                                    database_connection=database_connection)
     if not shows_list:
         return redirect(url_for("get_shows_year", year=year))
 
@@ -443,6 +502,8 @@ def get_shows_year_all(year: int):
 
 @app.route("/shows/recent")
 def get_shows_recent():
+    """Redirects /shows/recent to / as the index page presents a list
+    of recent show details"""
     return redirect(url_for("index"))
 
 #endregion
@@ -451,6 +512,8 @@ def get_shows_recent():
 #region NPR Show Redirect Routes
 @app.route("/s/<string:show_date>")
 def npr_show_redirect(show_date: Text):
+    """Takes an ISO-like date string and redirects to the appropriate
+    show page on NPR's website."""
     show_date_object = date_string_to_date(show_date)
 
     if not show_date_object:

@@ -3,8 +3,7 @@
 <h2><a href="{{ url_for('get_show_year_month_day',
                         year=show_date.year,
                         month=show_date.month,
-                        day=show_date.day) }}"
-    title="Database ID: {{ show.id }}">{{ show.date }}</a></h2>
+                        day=show_date.day) }}">{{ show.date }}</a></h2>
 
 <div class="show-block">
 <div class="row show-badges">
@@ -20,6 +19,7 @@
                                                               day=repeat_show.day) }}">{{ show.original_show_date }}</a></span>
         {% endif %}
         <span class="show-nprlink"><a href="{{ url_for('npr_show_redirect', show_date=show.date) }}">NPR</a></span>
+        <span class="database-id">ID: {{ show.id }}</span>
     </div>
 </div>
 
@@ -102,12 +102,16 @@
         {% if show.guests %}
             <ul class="guest-list">
                 {% for guest in show.guests %}
-                <li>
-                    <a href="{{ url_for('get_guest_details',
-                                        guest=guest.slug) }}">{{ guest.name }}</a>
-                    {{ "%s"|format(guest.score) if guest.score }}
-                    {{ "*" if guest.score_exception }}
-                </li>
+                    {% if guest.slug != 'none' %}
+                    <li>
+                        <a href="{{ url_for('get_guest_details',
+                                            guest=guest.slug) }}">{{ guest.name }}</a>
+                        {{ "%s"|format(guest.score) if guest.score }}
+                        {{ "*" if guest.score_exception }}
+                    </li>
+                    {% else %}
+                    <span class="data-na">N/A</span>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% else %}
