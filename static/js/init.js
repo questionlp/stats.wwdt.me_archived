@@ -5,12 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var dropdown_options = {
         "alignment": "right",
+        "autoTrigger": false,
         "constrainWidth": false,
         "coverTrigger": false,
         "hover": true,
         "inDuration": 100,
-        "outDuration": 100
-    }
+        "outDuration": 125
+    };
 
     var sidenav_instances = M.Sidenav.init(sidenav_elems);
     var dropdown_instances = M.Dropdown.init(dropdown_elems, dropdown_options);

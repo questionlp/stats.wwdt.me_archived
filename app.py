@@ -7,7 +7,6 @@ from datetime import date, datetime
 from dateutil import parser
 import json
 import pytz
-import sys
 import traceback
 from typing import Optional, Text
 
@@ -36,7 +35,6 @@ app.create_jinja_environment()
 #region Bootstrap Functions
 def load_config():
     """Load configuration settings from config.json"""
-
     global ga_property_code
 
     with open("config.json", "r") as config_file:
@@ -128,7 +126,6 @@ def index():
     recent_shows.reverse()
     return render_template("pages/index.html",
                            date_string_to_date=date_string_to_date,
-                           show_years=retrieve_show_years(),
                            shows=recent_shows,
                            ga_property_code=ga_property_code,
                            rendered_at=generate_date_time_stamp())
@@ -434,13 +431,16 @@ def get_shows_year(year: int):
 def get_shows_date(show_date: Text):
     """Convert an ISO-like date string into a datetime value and
     redirect the request with the parsed year, month and day"""
-    parsed_date = parser.parse(show_date)
-    return redirect(url_for("get_show_year_month_day",
-                            date_string_to_date=date_string_to_date,
-                            year=parsed_date.year,
-                            month=parsed_date.month,
-                            day=parsed_date.day,
-                            ), code=301)
+    try:
+        parsed_date = parser.parse(show_date)
+        return redirect(url_for("get_show_year_month_day",
+                                date_string_to_date=date_string_to_date,
+                                year=parsed_date.year,
+                                month=parsed_date.month,
+                                day=parsed_date.day,
+                                ), code=301)
+    except:
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/<int:year>/<int:month>")
 def get_shows_year_month(year: int, month: int):
@@ -455,7 +455,6 @@ def get_shows_year_month(year: int, month: int):
 
     return render_template("shows/year_month.html",
                            date_string_to_date=date_string_to_date,
-                           show_years=retrieve_show_years(),
                            year_month=year_month,
                            shows=show_list,
                            ga_property_code=ga_property_code,
@@ -476,7 +475,6 @@ def get_show_year_month_day(year: int, month: int, day: int):
         show_list.append(details)
         return render_template("shows/single.html",
                                date_string_to_date=date_string_to_date,
-                               show_years=retrieve_show_years(),
                                today=today,
                                shows=show_list,
                                ga_property_code=ga_property_code,

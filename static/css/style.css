@@ -1,4 +1,8 @@
 @media all {
+    /* Comment out following two lines to disable sticky footer */
+    body { display: flex; min-height: 100vh; flex-direction: column; }
+    main { flex: 1 0 auto; }
+
     html, button, input, select, textarea { font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: initial; }
     code, pre { font-family: "IBM Plex Mono", "Consolas", "Monaco", monospace; }
     main a { color: #3060c0;}
@@ -8,6 +12,7 @@
     footer a { border-bottom: 1px dotted; color: rgba(255,255,255,0.9); }
     h1 { font-size: 1.5rem; font-weight: 600; margin: 1.5rem 0 1.5rem 0; }
     h2 { font-size: 1.25rem; font-weight: 600; margin: 1.25rem 0 1.25rem 0; }
+    .collection-item>a { border-bottom: 1px dotted !important; }
     .container { max-width: initial; width: 95%; }
     .dropdown-content { border: 2px solid rgba(0, 0, 0, 0.1); }
     .dropdown-content li>a, .dropdown-content li>span { color: initial; }
@@ -36,6 +41,29 @@
     .show-nprlink>a { border-bottom: none !important; color: white; }
     .show-nprlink>a::after { content: " \2192"; }
     .traceback { border: 2px solid rgba(0, 0, 0, 0.25); font-size: 90%; overflow: scroll; padding: 1.5rem; width: 100%; }
+}
+
+@media (prefers-color-scheme: light) {
+    html, button, input, select, textarea { background-color: initial; color: initial; }
+}
+
+@media (prefers-color-scheme: dark) {
+    html, button, input, select, textarea, .collection, .collection-item { background-color: #081624 !important; color: white !important; }
+    nav, nav ul a, .brand-logo, .page-footer, .footer-copyright, .nav-wrapper, .sidenav li>a { color: white !important; }
+    nav ul a { transition: background-color 0s; }
+    nav ul.dropdown-content a:hover, .sidenav li>a:hover { background-color: rgba(240, 240, 240, 0.5); color: #242f39 !important; }
+    main a { color: #64b5f6 !important; }
+    div.label { border-bottom: 2px solid rgba(240, 240, 240, 0.5); }
+    .collection, .collection-item { border-color: rgba(240, 240, 240, 0.5) !important; }
+    .collection-item a { border-bottom: 1px dotted !important; }
+    .footer-copyright { background-color: #072C64 !important; }
+    .guest-block, .host-block, .panelist-block, .scorekeeper-block, .show-block { border-left: 4px solid rgba(240, 240, 240, 0.5); }
+    .guest-appearance-list>ul, .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-rule: 1px dotted rgba(240, 240, 240, 0.5); }
+    .guest-show-bestof, .guest-show-repeat, .host-show-bestof, .host-show-repeat, .panelist-show-bestof, .panelist-show-repeat, .scorekeeper-emeritus, .scorekeeper-show-bestof, .scorekeeper-show-repeat, .show-bestof, .show-repeat { color: #242f39 }
+    .database-id, .show-nprlink>a { border-bottom: none !important; color: white !important; }
+    .show-repeat>a { color: #26323b !important; }
+    .sidenav, .sidenav ul, ul.dropdown-content { background-color: #26323b !important; }
+    
 }
 
 @media only screen and (max-width: 1024px) {

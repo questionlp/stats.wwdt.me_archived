@@ -4,15 +4,7 @@
         <a href="#" data-target="slide-out" class="sidenav-trigger">
             <i class="material-icons">menu</i>
         </a>
-
         <a href="{{ url_for('index') }}" class="brand-logo">Wait Wait Stats Page</a>
-
-        <ul id="dropdown-shows" class="dropdown-content z-depth-0">
-            {% for year in show_years %}
-            <li><a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a></li>
-            {% endfor %}
-        </ul>
-
         <ul id="dropdown-more" class="dropdown-content z-depth-0">
             <li><a href="{{ url_for('about') }}">About</a></li>
             <li><a href="{{ url_for('site_history') }}">Site History</a></li>
@@ -20,20 +12,14 @@
             <li><a href="//blog.wwdt.me/contact-me/">Contact Me</a></li>
             <li><a href="//reports.wwdt.me/">Reports</a></li>
         </ul>
-
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="{{ url_for('get_guests') }}">Guests</a></li>
             <li><a href="{{ url_for('get_hosts') }}">Hosts</a></li>
             <li><a href="{{ url_for('get_panelists') }}">Panelists</a></li>
             <li><a href="{{ url_for('get_scorekeepers') }}">Scorekeepers</a></li>
-            <li>
-                <a href="{{ url_for('get_shows') }}" class="dropdown-trigger" data-target="dropdown-shows">
-                Shows<i class="material-icons right">arrow_drop_down</i></a>
-            </li>
-            <li>
-                <a href="#" class="dropdown-trigger" data-target="dropdown-more">
-                More<i class="material-icons right">arrow_drop_down</i></a>
-            </li>
+            <li><a href="{{ url_for('get_shows') }}">Shows</a></li>
+            <li><a href="#" class="dropdown-trigger" data-target="dropdown-more">
+                More<i class="material-icons right">arrow_drop_down</i></a></li>
         </ul>
     </div>
 </nav>
@@ -41,17 +27,13 @@
 <div id="slide-out" class="sidenav z-depth-0">
     <ul>
         <li><a href="{{ url_for('index') }}">Home</a></li>
-
         <li><div class="divider"></div></li>
-
         <li><a href="{{ url_for('get_guests') }}">Guests</a></li>
         <li><a href="{{ url_for('get_hosts') }}">Hosts</a></li>
         <li><a href="{{ url_for('get_panelists') }}">Panelists</a></li>
         <li><a href="{{ url_for('get_scorekeepers') }}">Scorekeepers</a></li>
         <li><a href="{{ url_for('get_shows') }}">Shows</a></li>
-
         <li><div class="divider"></div></li>
-
         <li><a href="{{ url_for('about') }}">About</a></li>
         <li><a href="{{ url_for('site_history') }}">Site History</a></li>
         <li><a href="//blog.wwdt.me/">Blog</a></li>
