@@ -103,7 +103,7 @@
                                         month=show_date.month,
                                         day=show_date.day) }}">
                     {{appearance.date}}</a>
-                    {% if appearance.score %}
+                    {% if appearance.score != None %}
                         {{ appearance.score }}
                         {% if appearance.rank %}
                             ({{ appearance.rank|rankify }})
