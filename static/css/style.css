@@ -22,7 +22,7 @@
     div.label { border-bottom: 2px solid rgba(0, 0, 0, 0.25); font-weight: 600; }
     ul.panelist-list, ul.guest-list, ul.host-list, ul.panelist-list, ul.panelist-stats, ul.scorekeeper-list { line-height: 1.75; list-style: none; margin: 0; padding: 0; }
     .data-tbd, .data-na, .data-multiple { font-style: italic; }
-    .database-id { background-color: #37474f; color: #eceff1; }
+    .database-id { background-color: #393b40; color: #eceff1; }
     .scorekeeper-emeritus { background-color: #c5cae9; }
     .database-id, .show-bestof, .show-repeat, .scorekeeper-emeritus, .show-nprlink { font-weight: 500; padding: 0.25rem 1rem; margin-right: 0.5rem; }    
     ul.footer-nav-links { list-style: none; margin: 0; padding: 0; }
@@ -50,10 +50,10 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    html, button, input, select, textarea, .collection, .collection-item { background-color: #081624 !important; color: white !important; }
+    html, button, input, select, textarea, .collection, .collection-item { background-color: #202124 !important; color: white !important; }
     nav, nav ul a, .brand-logo, .page-footer, .footer-copyright, .nav-wrapper, .sidenav li>a { color: white !important; }
     nav ul a { transition: background-color 0s; }
-    nav ul.dropdown-content a:hover, .sidenav li>a:hover { background-color: rgba(240, 240, 240, 0.5); color: #242f39 !important; }
+    nav ul.dropdown-content a:hover, .sidenav li>a:hover { background-color: rgba(240, 240, 240, 0.5); color: #323438 !important; }
     main a { color: #64b5f6 !important; }
     div.label { border-bottom: 2px solid rgba(240, 240, 240, 0.5); }
     .collection, .collection-item { border-color: rgba(240, 240, 240, 0.5) !important; }
@@ -64,7 +64,7 @@
     .guest-show-bestof, .guest-show-repeat, .host-show-bestof, .host-show-repeat, .panelist-show-bestof, .panelist-show-repeat, .scorekeeper-emeritus, .scorekeeper-show-bestof, .scorekeeper-show-repeat, .show-bestof, .show-repeat { color: #242f39 }
     .database-id, .show-nprlink>a { border-bottom: none !important; color: white !important; }
     .show-repeat>a { color: #26323b !important; }
-    .sidenav, .sidenav ul, ul.dropdown-content { background-color: #26323b !important; }
+    .sidenav, .sidenav ul, ul.dropdown-content { background-color: #323438 !important; }
 }
 
 @media only screen and (max-width: 1024px) {

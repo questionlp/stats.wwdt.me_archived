@@ -41,9 +41,9 @@
                                         month=show_date.month,
                                         day=show_date.day) }}">
                     {{appearance.date}}</a>
-                    {% if appearance.score and appearance.score_exception %}
+                    {% if appearance.score != None and appearance.score_exception %}
                         {{appearance.score }} *
-                    {% elif appearance.score and not appearance.score_exception %}
+                    {% elif appearance.score != None and not appearance.score_exception %}
                         {{ appearance.score }}
                     {% endif %}
                     {% if appearance.best_of %}

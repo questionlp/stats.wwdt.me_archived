@@ -78,7 +78,7 @@
                     {% if panelist.score %}
                         <a href="{{ url_for('get_panelist_details',
                                             panelist=panelist.slug) }}">{{ panelist.name }}</a> {{ panelist.score }}
-                        {% if panelist.lightning_round_start and panelist.lightning_round_correct %}
+                        {% if panelist.lightning_round_start != None and panelist.lightning_round_correct != None %}
                             ({{ panelist.lightning_round_start}} / {{ panelist.lightning_round_correct}})
                         {% endif %}
                     {% else %}
@@ -106,8 +106,9 @@
                     <li>
                         <a href="{{ url_for('get_guest_details',
                                             guest=guest.slug) }}">{{ guest.name }}</a>
-                        {{ "%s"|format(guest.score) if guest.score }}
-                        {{ "*" if guest.score_exception }}
+                        {% if guest.score != None %}
+                        {{ guest.score }} {{ "*" if guest.score_exception }}
+                        {% endif %}
                     </li>
                     {% else %}
                     <span class="data-na">N/A</span>
