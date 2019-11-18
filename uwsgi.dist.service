@@ -12,5 +12,3 @@ ExecStart=              ; Set to venv/bin/uwsgi --ini uwsgi.ini
 
 [Install]
 WantedBy=multi-user.target
-logger = file:/         ; Set to location of application log file
-req-logger = file:/     ; Set to location of request log file
