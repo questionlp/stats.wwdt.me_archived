@@ -88,7 +88,7 @@
     .row.show-badges { margin-bottom: 0; }
     ul.panelist-list, ul.guest-list { line-height: 2; }
     .database-id, .show-bestof, .scorekeeper-emeritus, .show-repeat, .show-nprlink { display: inline-flex; margin-bottom: 0.5rem; }
-    .footer-copyright span.right { float: initial !important; }
+    .footer-copyright span.right { display: inline-block; float: initial !important; }
 }
 
 @media only print {
