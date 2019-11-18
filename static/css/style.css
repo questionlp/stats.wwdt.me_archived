@@ -83,7 +83,7 @@
     .collection .collection-item { padding: 1.33rem; }
     nav .brand-logo { font-size: 1.0rem; font-weight: 500; left: 45%; transform: translateX(-40%); }
     .col.s12 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
-    .guest-block, .host-block, .scorekeeper-block, .show-block { border-left: 2px solid rgba(0, 0, 0, 0.25); }
+    .guest-block, .host-block, .scorekeeper-block, .show-block { border-left: 2px solid; }
     .row.show-badges { margin-bottom: 0; }
     ul.panelist-list, ul.guest-list { line-height: 2; }
     .database-id, .show-bestof, .scorekeeper-emeritus, .show-repeat, .show-nprlink { display: inline-flex; margin-bottom: 0.5rem; }
