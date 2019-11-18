@@ -9,6 +9,9 @@ uwsgi.ini
 uwsgi.service
 *.sock
 
+# Ignore robots.txt
+static/robots.txt
+
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python
 
