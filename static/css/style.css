@@ -38,6 +38,7 @@
     .guest-show-repeat, .host-show-repeat, .panelist-show-repeat, .scorekeeper-show-repeat, .show-repeat { background-color: #ffe0b2; }
     .guest-show-repeat>a, .host-show-repeat>a, .panelist-show-repeat>a, .scorekeeper-show-repeat>a { border-bottom: none !important; }
     .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
+    .materialboxed { margin: 0 auto; }
     q.scorekeeper-description { font-style: italic; }
     .show-description, .show-notes { white-space: pre-line; }
     .show-repeat>a { border-bottom: none !important; }

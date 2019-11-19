@@ -19,7 +19,7 @@ from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Global Constants
-APP_VERSION = "4.0a1"
+APP_VERSION = "4.0b1"
 
 #endregion
 
@@ -109,10 +109,22 @@ def handle_exception(error):
 #endregion
 
 #region General Redirect Routes
+@app.route("/help")
+def help_page():
+    """Redirecting /help to /"""
+    return redirect(url_for("index"))
+
 @app.route("/location")
 def get_location():
     """Placeholder for future show location view"""
     return redirect(url_for("index"))
+
+@app.route("/search")
+def search_page():
+    """Redirecting /search to /"""
+    return redirect(url_for("index"))
+
+#endregion
 
 #region Default Route
 @app.route("/")
