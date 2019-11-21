@@ -19,7 +19,7 @@ from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Global Constants
-APP_VERSION = "4.0b1"
+APP_VERSION = "4.0rc1"
 
 #endregion
 
