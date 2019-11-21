@@ -1,5 +1,5 @@
 {% for show in shows %}
-{% if show %}
+{% if show %}{# Sanity Check in case of a None #}
 {% set show_date = date_string_to_date(date_string=show.date) %}
 <h2><a href="{{ url_for('get_show_year_month_day',
                         year=show_date.year,

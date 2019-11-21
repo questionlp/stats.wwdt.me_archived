@@ -1,4 +1,5 @@
 {% for scorekeeper in scorekeepers %}
+{% if scorekeeper %}{# Sanity Check in case of a None #}
 <h2><a href="{{ url_for('get_scorekeeper_details',
                          scorekeeper=scorekeeper.slug) }}">{{ scorekeeper.name }}</a></h2>
 
@@ -61,4 +62,5 @@
     </div>
 </div>
 </div>
+{% endif %}
 {% endfor %}

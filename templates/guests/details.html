@@ -1,4 +1,5 @@
 {% for guest in guests %}
+{% if guest %}{# Sanity Check in case of a None #}
 <h2><a href="{{ url_for('get_guest_details',
                          guest=guest.slug) }}">{{ guest.name }}</a></h2>
 
@@ -62,4 +63,5 @@
     </div>
 </div>
 </div>
+{% endif %}
 {% endfor %}

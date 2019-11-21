@@ -1,5 +1,5 @@
 {% for host in hosts %}
-{% if not host.slug == "tbd" %}{# Skip TBD Host #}
+{% if host and not host.slug == "tbd" %}{# {# Sanity Check in case of a None and Skip TBD Host #}
 <h2><a href="{{ url_for('get_host_details',
                          host=host.slug) }}">{{ host.name }}</a></h2>
 

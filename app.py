@@ -19,7 +19,7 @@ from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Global Constants
-APP_VERSION = "4.0rc1"
+APP_VERSION = "4.0.0"
 
 #endregion
 
@@ -62,15 +62,13 @@ def retrieve_show_years(reverse_order: bool = True):
 
 def date_string_to_date(**kwargs):
     """Used to convert an ISO-style date string into a datetime object"""
-    try:
-        if "date_string" in kwargs:
-            if kwargs["date_string"]:
-                date_object = parser.parse(kwargs["date_string"])
-                return date_object
-            else:
-                return None
-    except ValueError:
-        return None
+    if "date_string" in kwargs and kwargs["date_string"]:
+        try:
+            date_object = parser.parse(kwargs["date_string"])
+            return date_object
+
+        except ValueError:
+            return None
 
 #endregion
 
@@ -167,12 +165,10 @@ def get_guests():
     database_connection.reconnect()
     guests_list = ww_guest.info.retrieve_all(database_connection)
 
-    if guests_list:
-        return render_template("guests/guests.html",
-                               guests=guests_list)
-    else:
+    if not guests_list:
         return redirect(url_for("index"))
 
+    return render_template("guests/guests.html", guests=guests_list)
 
 @app.route("/guests/<string:guest>")
 def get_guest_details(guest: Text):
@@ -185,16 +181,15 @@ def get_guest_details(guest: Text):
     guest_details = ww_guest.details.retrieve_by_slug(guest_slug,
                                                       database_connection)
 
-    if guest_details:
-        # Template expects a list of guests(s)
-        guests = []
-        guests.append(guest_details)
-        return render_template("guests/single.html",
-                               guest_name=guest_details["name"],
-                               guests=guests)
-    else:
+    if not guest_details:
         return redirect(url_for("get_guests"))
 
+    # Template expects a list of guests(s)
+    guests = []
+    guests.append(guest_details)
+    return render_template("guests/single.html",
+                           guest_name=guest_details["name"],
+                           guests=guests)
 
 @app.route("/guests/all")
 def get_guests_all():
@@ -202,11 +197,10 @@ def get_guests_all():
     database_connection.reconnect()
     guests = ww_guest.details.retrieve_all(database_connection)
 
-    if guests:
-        return render_template("guests/all.html",
-                               guests=guests)
-    else:
+    if not guests:
         return redirect(url_for("get_guests"))
+
+    return render_template("guests/all.html", guests=guests)
 
 #endregion
 
@@ -223,11 +217,10 @@ def get_hosts():
     database_connection.reconnect()
     hosts_list = ww_host.info.retrieve_all(database_connection)
 
-    if hosts_list:
-        return render_template("hosts/hosts.html",
-                               hosts=hosts_list)
-    else:
+    if not hosts_list:
         return redirect(url_for("index"))
+
+    return render_template("hosts/hosts.html", hosts=hosts_list)
 
 @app.route("/hosts/<string:host>")
 def get_host_details(host: Text):
@@ -240,15 +233,15 @@ def get_host_details(host: Text):
     host_details = ww_host.details.retrieve_by_slug(host_slug,
                                                     database_connection)
 
-    if host_details:
-        # Template expects a list of hosts(s)
-        hosts = []
-        hosts.append(host_details)
-        return render_template("hosts/single.html",
-                               host_name=host_details["name"],
-                               hosts=hosts)
-    else:
+    if not host_details:
         return redirect(url_for("get_hosts"))
+
+    # Template expects a list of hosts(s)
+    hosts = []
+    hosts.append(host_details)
+    return render_template("hosts/single.html",
+                           host_name=host_details["name"],
+                           hosts=hosts)
 
 @app.route("/hosts/all")
 def get_hosts_all():
@@ -256,11 +249,10 @@ def get_hosts_all():
     database_connection.reconnect()
     hosts = ww_host.details.retrieve_all(database_connection)
 
-    if hosts:
-        return render_template("hosts/all.html",
-                               hosts=hosts)
-    else:
+    if not hosts:
         return redirect(url_for("get_hosts"))
+
+    return render_template("hosts/all.html", hosts=hosts)
 
 #endregion
 
@@ -277,11 +269,11 @@ def get_panelists():
     database_connection.reconnect()
     panelist_list = ww_panelist.info.retrieve_all(database_connection)
 
-    if panelist_list:
-        return render_template("panelists/panelists.html",
-                               panelists=panelist_list)
-    else:
+    if not panelist_list:
         return redirect(url_for("index"))
+
+    return render_template("panelists/panelists.html",
+                           panelists=panelist_list)
 
 @app.route("/panelists/<string:panelist>")
 def get_panelist_details(panelist: Text):
@@ -295,15 +287,15 @@ def get_panelist_details(panelist: Text):
     panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug,
                                                             database_connection)
 
-    if panelist_details:
-        # Template expects a list of panelists(s)
-        panelists = []
-        panelists.append(panelist_details)
-        return render_template("panelists/single.html",
-                               panelist_name=panelist_details["name"],
-                               panelists=panelists)
-    else:
+    if not panelist_details:
         return redirect(url_for("get_panelists"))
+
+    # Template expects a list of panelists(s)
+    panelists = []
+    panelists.append(panelist_details)
+    return render_template("panelists/single.html",
+                           panelist_name=panelist_details["name"],
+                           panelists=panelists)
 
 @app.route("/panelists/all")
 def get_panelists_all():
@@ -311,11 +303,10 @@ def get_panelists_all():
     database_connection.reconnect()
     panelists = ww_panelist.details.retrieve_all(database_connection)
 
-    if panelists:
-        return render_template("panelists/all.html",
-                               panelists=panelists)
-    else:
+    if not panelists:
         return redirect(url_for("get_panelists"))
+
+    return render_template("panelists/all.html", panelists=panelists)
 
 #endregion
 
@@ -331,11 +322,11 @@ def get_scorekeepers():
     """Presents a list of scorekeepers"""
     database_connection.reconnect()
     scorekeepers_list = ww_scorekeeper.info.retrieve_all(database_connection)
-    if scorekeepers_list:
-        return render_template("scorekeepers/scorekeepers.html",
-                               scorekeepers=scorekeepers_list)
-    else:
+    if not scorekeepers_list:
         return redirect(url_for("index"))
+
+    return render_template("scorekeepers/scorekeepers.html",
+                           scorekeepers=scorekeepers_list)
 
 @app.route("/scorekeepers/<string:scorekeeper>")
 def get_scorekeeper_details(scorekeeper: Text):
@@ -349,26 +340,25 @@ def get_scorekeeper_details(scorekeeper: Text):
     scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug,
                                                                   database_connection)
 
-    if scorekeeper_details:
-        # Template expects a list of scorekeepers(s)
-        scorekeepers = []
-        scorekeepers.append(scorekeeper_details)
-        return render_template("scorekeepers/single.html",
-                               scorekeeper_name=scorekeeper_details["name"],
-                               scorekeepers=scorekeepers)
-    else:
+    if not scorekeeper_details:
         return redirect(url_for("get_scorekeepers"))
+
+    # Template expects a list of scorekeepers(s)
+    scorekeepers = []
+    scorekeepers.append(scorekeeper_details)
+    return render_template("scorekeepers/single.html",
+                           scorekeeper_name=scorekeeper_details["name"],
+                           scorekeepers=scorekeepers)
 
 @app.route("/scorekeepers/all")
 def get_scorekeepers_all():
     """Presents appearance details for all scorekeepers"""
     database_connection.reconnect()
     scorekeepers = ww_scorekeeper.details.retrieve_all(database_connection)
-    if scorekeepers:
-        return render_template("scorekeepers/all.html",
-                               scorekeepers=scorekeepers)
-    else:
+    if not scorekeepers:
         return redirect(url_for("get_scorekeepers"))
+
+    return render_template("scorekeepers/all.html", scorekeepers=scorekeepers)
 
 #endregion
 
@@ -385,26 +375,32 @@ def get_shows():
     database_connection.reconnect()
     show_years = retrieve_show_years()
 
-    if show_years:
-        return render_template("shows/shows.html",
-                               show_years=show_years)
-    else:
+    if not show_years:
         return redirect(url_for("index"))
+
+    return render_template("shows/shows.html", show_years=show_years)
 
 @app.route("/shows/<int:year>")
 def get_shows_year(year: int):
     """Presents a list of available show months for a given year"""
     database_connection.reconnect()
-    date_year = date(year=year, month=1, day=1)
-    show_months = ww_show.info.retrieve_months_by_year(show_year=year,
-                                                       database_connection=database_connection)
-    months = []
-    for month in show_months:
-        months.append(date(year=year, month=month, day=1))
+    try:
+        date_year = date(year=year, month=1, day=1)
+        show_months = ww_show.info.retrieve_months_by_year(show_year=year,
+                                                           database_connection=database_connection)
 
-    return render_template("shows/year.html",
-                           year=date_year,
-                           show_months=months)
+        if not show_months:
+            return redirect(url_for("get_shows"))
+
+        months = []
+        for month in show_months:
+            months.append(date(year=year, month=month, day=1))
+
+        return render_template("shows/year.html",
+                               year=date_year,
+                               show_months=months)
+    except ValueError:
+        return redirect(url_for("get_shows"))
 
 @app.route("/shows/<string:show_date>")
 def get_shows_date(show_date: Text):
@@ -424,35 +420,42 @@ def get_shows_date(show_date: Text):
 def get_shows_year_month(year: int, month: int):
     """Presents a list of available shows for a given year and month"""
     database_connection.reconnect()
-    year_month = date(year=year, month=month, day=1)
-    show_list = ww_show.details.retrieve_by_year_month(show_year=year,
-                                                       show_month=month,
-                                                       database_connection=database_connection)
-    if not show_list:
-        return redirect(url_for("index"))
+    try:
+        year_month = date(year=year, month=month, day=1)
+        show_list = ww_show.details.retrieve_by_year_month(show_year=year,
+                                                           show_month=month,
+                                                           database_connection=database_connection)
+        if not show_list:
+            return redirect(url_for("get_shows_year", year=year))
 
-    print(show_list)
-    return render_template("shows/year_month.html",
-                           year_month=year_month,
-                           shows=show_list)
+        return render_template("shows/year_month.html",
+                               year_month=year_month,
+                               shows=show_list)
+    except ValueError:
+        return redirect(url_for("get_shows_year", year=year))
 
 @app.route("/shows/<int:year>/<int:month>/<int:day>")
 def get_show_year_month_day(year: int, month: int, day: int):
     """Presents show details for a given year, month and day"""
     database_connection.reconnect()
-    today = date(year=year, month=month, day=day)
-    details = ww_show.details.retrieve_by_date(show_year=year,
-                                               show_month=month,
-                                               show_day=day,
-                                               database_connection=database_connection)
-    if details:
+    try:
+        show_date = date(year=year, month=month, day=day)
+        details = ww_show.details.retrieve_by_date(show_year=year,
+                                                   show_month=month,
+                                                   show_day=day,
+                                                   database_connection=database_connection)
+        if not details:
+            return redirect(url_for("get_shows_year_month",
+                                    year=year,
+                                    month=month))
+
         # Template expects a list of show(s)
         show_list = []
         show_list.append(details)
         return render_template("shows/single.html",
-                               today=today,
+                               show_date=show_date,
                                shows=show_list)
-    else:
+    except ValueError:
         return redirect(url_for("get_shows"))
 
 @app.route("/shows/<int:year>/all")

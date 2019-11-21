@@ -1,4 +1,5 @@
 {% for panelist in panelists %}
+{% if panelist %}{# Sanity Check in case of a None #}
 <h2><a href="{{ url_for('get_panelist_details',
                         panelist=panelist.slug) }}">{{ panelist.name }}</a></h2>
 
@@ -125,4 +126,5 @@
     </div>
 </div>
 </div>
+{% endif %}
 {% endfor %}

@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-{% block title %}{{ today.isoformat() }} | Shows{% endblock %}
+{% block title %}{{ show_date.isoformat() }} | Shows{% endblock %}
 
 {% block content %}
 <div class="page-breadcrumb">
     <a href="{{ url_for('get_shows') }}">Shows</a> &gt;
-    <a href="{{ url_for('get_shows_year', year=today.year) }}">{{ today.year }}</a> &gt;
-    <a href="{{ url_for('get_shows_year_month', year=today.year, month=today.month) }}">{{ today.strftime("%B") }}</a>
+    <a href="{{ url_for('get_shows_year', year=show_date.year) }}">{{ show_date.year }}</a> &gt;
+    <a href="{{ url_for('get_shows_year_month', year=show_date.year, month=show_date.month) }}">
+        {{ show_date.strftime("%B") }}</a>
 </div>
 
 <h1>Show Details</h1>
