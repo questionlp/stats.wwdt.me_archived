@@ -234,6 +234,9 @@ def get_host_details(host: Text):
     """Presents appearance details for a show host"""
     database_connection.reconnect()
     host_slug = slugify(host)
+    if host and host != host_slug:
+        return redirect(url_for("get_host_details", host=host_slug))
+
     host_details = ww_host.details.retrieve_by_slug(host_slug,
                                                     database_connection)
 
@@ -285,6 +288,10 @@ def get_panelist_details(panelist: Text):
     """Presents statistics and appearance details for a panelist"""
     database_connection.reconnect()
     panelist_slug = slugify(panelist)
+    if panelist and panelist != panelist_slug:
+        return redirect(url_for("get_panelist_details",
+                                panelist=panelist_slug))
+
     panelist_details = ww_panelist.details.retrieve_by_slug(panelist_slug,
                                                             database_connection)
 
@@ -335,6 +342,10 @@ def get_scorekeeper_details(scorekeeper: Text):
     """Presents appearance details for a scorekeeper"""
     database_connection.reconnect()
     scorekeeper_slug = slugify(scorekeeper)
+    if scorekeeper and scorekeeper != scorekeeper_slug:
+        return redirect(url_for("get_scorekeeper_details",
+                                scorekeeper=scorekeeper_slug))
+
     scorekeeper_details = ww_scorekeeper.details.retrieve_by_slug(scorekeeper_slug,
                                                                   database_connection)
 
