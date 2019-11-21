@@ -64,8 +64,11 @@ def date_string_to_date(**kwargs):
     """Used to convert an ISO-style date string into a datetime object"""
     try:
         if "date_string" in kwargs:
-            date_object = parser.parse(kwargs["date_string"])
-            return date_object
+            if kwargs["date_string"]:
+                date_object = parser.parse(kwargs["date_string"])
+                return date_object
+            else:
+                return None
     except ValueError:
         return None
 
@@ -417,6 +420,7 @@ def get_shows_year_month(year: int, month: int):
     if not show_list:
         return redirect(url_for("index"))
 
+    print(show_list)
     return render_template("shows/year_month.html",
                            year_month=year_month,
                            shows=show_list)
