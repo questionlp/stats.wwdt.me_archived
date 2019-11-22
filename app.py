@@ -543,7 +543,7 @@ app.jinja_env.globals["app_version"] = APP_VERSION
 app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
-app.jinja_env.globals["rendered_at"] = generate_date_time_stamp()
+app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
 database_connection = mysql.connector.connect(**config["database"])
 database_connection.autocommit = True
 
