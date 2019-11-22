@@ -70,6 +70,8 @@ def date_string_to_date(**kwargs):
         except ValueError:
             return None
 
+    return None
+
 #endregion
 
 #region Filters
