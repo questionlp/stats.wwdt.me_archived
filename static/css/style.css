@@ -40,6 +40,7 @@
     .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
     .materialboxed { margin: 0 auto; }
     q.scorekeeper-description { font-style: italic; }
+    ul.show-all-years { list-style: none; column-count: 4;}
     .show-description, .show-notes { white-space: pre-line; }
     .show-repeat>a { border-bottom: none !important; }
     .show-nprlink { background-color: #3366cc; color: white; }
