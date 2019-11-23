@@ -487,6 +487,7 @@ def get_shows_recent():
 def npr_show_redirect(show_date: Text):
     """Takes an ISO-like date string and redirects to the appropriate
     show page on NPR's website."""
+    database_connection.reconnect()
     show_date_object = date_string_to_date(date_string=show_date)
 
     if not show_date_object:
