@@ -9,6 +9,7 @@
     },
 
     "settings": {
-        "ga_property_code": null
+        "ga_property_code": null,
+        "site_url": ""
     }
 }

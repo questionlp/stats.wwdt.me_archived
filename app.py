@@ -156,6 +156,18 @@ def site_history():
 
 #endregion
 
+#region Sitemap XML Route
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    """Sitemap XML"""
+    site_url = config["settings"]["site_url"]
+    show_years = retrieve_show_years(reverse_order=False)
+    return render_template("core/sitemap.xml",
+                           site_url=site_url,
+                           show_years=show_years)
+
+#endregion
+
 
 #region Guest Routes
 @app.route("/guest")
