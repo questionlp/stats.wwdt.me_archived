@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var dropdown_options = {
         "alignment": "right",
-        "autoTrigger": false,
+        "autoTrigger": true,
         "constrainWidth": false,
         "coverTrigger": false,
-        "hover": true,
+        "hover": false,
         "inDuration": 100,
         "outDuration": 125
     };
