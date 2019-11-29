@@ -10,7 +10,7 @@ from typing import Text
 import traceback
 
 from dateutil import parser
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, redirect, render_template, Response, url_for
 from flask.logging import create_logger
 import htmlmin
 import mysql.connector
@@ -53,14 +53,32 @@ def generate_date_time_stamp(time_zone: pytz.timezone = pytz.timezone("UTC")):
     now = datetime.now(time_zone)
     return now.strftime("%Y-%m-%d %H:%M:%S %Z")
 
+def retrieve_show_dates(reverse_order: bool = False):
+    """Retrieve a list of available show dates"""
+    database_connection.reconnect()
+    show_dates = ww_show.info.retrieve_all_dates_tuple(database_connection)
+    if show_dates and reverse_order:
+        show_dates.reverse()
+
+    return show_dates
+
 def retrieve_show_years(reverse_order: bool = True):
-    """Retrieve list of available show years"""
+    """Retrieve a list of available show years"""
     database_connection.reconnect()
     years = ww_show.info.retrieve_years(database_connection)
-    if reverse_order:
+    if years and reverse_order:
         years.reverse()
 
     return years
+
+def retrieve_show_years_months(reverse_order: bool = False):
+    """Retrieve a list of available show years and months"""
+    database_connection.reconnect()
+    years_months = ww_show.info.retrieve_all_show_years_months_tuple(database_connection)
+    if years_months and reverse_order:
+        years_months.reverse()
+
+    return years_months
 
 def date_string_to_date(**kwargs):
     """Used to convert an ISO-style date string into a datetime object"""
@@ -161,12 +179,25 @@ def site_history():
 #region Sitemap XML Route
 @app.route("/sitemap.xml")
 def sitemap_xml():
-    """Sitemap XML"""
+    """Default Sitemap XML"""
     site_url = config["settings"]["site_url"]
     show_years = retrieve_show_years(reverse_order=False)
-    return render_template("core/sitemap.xml",
-                           site_url=site_url,
-                           show_years=show_years)
+    sitemap = render_template("core/sitemap.xml",
+                              site_url=site_url,
+                              show_years=show_years)
+    return Response(sitemap, mimetype="text/xml")
+
+@app.route("/sitemap-shows.xml")
+def sitemap_shows_xml():
+    """Supplementary Sitemap XML for Show Pages"""
+    site_url = config["settings"]["site_url"]
+    show_dates = retrieve_show_dates(reverse_order=False)
+    show_years_months = retrieve_show_years_months(reverse_order=False)
+    sitemap = render_template("core/sitemap-shows.xml",
+                              site_url=site_url,
+                              show_dates=show_dates,
+                              show_years_months=show_years_months)
+    return Response(sitemap, mimetype="text/xml")
 
 #endregion
 

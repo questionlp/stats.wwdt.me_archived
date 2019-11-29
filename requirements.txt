@@ -20,4 +20,4 @@ typed-ast>=1.4.0
 Werkzeug>=0.15.4
 wrapt>=1.11.1
 uWSGI>=2.0.18
-wwdtm>=0.9.9
+wwdtm>=1.0.1
