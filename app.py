@@ -12,7 +12,6 @@ import traceback
 from dateutil import parser
 from flask import Flask, redirect, render_template, Response, url_for
 from flask.logging import create_logger
-import htmlmin
 import mysql.connector
 import pytz
 from slugify import slugify
@@ -126,8 +125,8 @@ def handle_exception(error):
     # Handle everything else with a basic 500 error page
     error_traceback = traceback.format_exc()
     app_logger.error(error_traceback)
-    return htmlmin.minify(render_template("errors/500.html",
-                                          error_traceback=error_traceback)), 500
+    return render_template("errors/500.html",
+                           error_traceback=error_traceback), 500
 
 #endregion
 
@@ -156,9 +155,7 @@ def index():
     database_connection.reconnect()
     recent_shows = ww_show.details.retrieve_recent(database_connection)
     recent_shows.reverse()
-    return htmlmin.minify(render_template("pages/index.html",
-                                          shows=recent_shows),
-                          remove_optional_attribute_quotes=False)
+    return render_template("pages/index.html", shows=recent_shows)
 
 #endregion
 
@@ -166,13 +163,12 @@ def index():
 @app.route("/about")
 def about():
     """About Page"""
-    return htmlmin.minify(render_template("pages/about.html"),
-                          remove_optional_attribute_quotes=False)
+    return render_template("pages/about.html")
 
 @app.route("/site-history")
 def site_history():
     """Site History Page"""
-    return htmlmin.minify(render_template("pages/site_history.html"))
+    return render_template("pages/site_history.html")
 
 #endregion
 
@@ -217,9 +213,7 @@ def get_guests():
     if not guests_list:
         return redirect(url_for("index"))
 
-    return htmlmin.minify(render_template("guests/guests.html",
-                                          guests=guests_list),
-                          remove_optional_attribute_quotes=False)
+    return render_template("guests/guests.html", guests=guests_list)
 
 @app.route("/guests/<string:guest>")
 def get_guest_details(guest: Text):
@@ -238,10 +232,9 @@ def get_guest_details(guest: Text):
     # Template expects a list of guests(s)
     guests = []
     guests.append(guest_details)
-    return htmlmin.minify(render_template("guests/single.html",
-                                          guest_name=guest_details["name"],
-                                          guests=guests),
-                          remove_optional_attribute_quotes=False)
+    return render_template("guests/single.html",
+                           guest_name=guest_details["name"],
+                           guests=guests)
 
 @app.route("/guests/all")
 def get_guests_all():
@@ -252,8 +245,7 @@ def get_guests_all():
     if not guests:
         return redirect(url_for("get_guests"))
 
-    return htmlmin.minify(render_template("guests/all.html", guests=guests),
-                          remove_optional_attribute_quotes=False)
+    return render_template("guests/all.html", guests=guests)
 
 #endregion
 
@@ -273,8 +265,7 @@ def get_hosts():
     if not hosts_list:
         return redirect(url_for("index"))
 
-    return htmlmin.minify(render_template("hosts/hosts.html", hosts=hosts_list),
-                          remove_optional_attribute_quotes=False)
+    return render_template("hosts/hosts.html", hosts=hosts_list)
 
 @app.route("/hosts/<string:host>")
 def get_host_details(host: Text):
@@ -293,10 +284,9 @@ def get_host_details(host: Text):
     # Template expects a list of hosts(s)
     hosts = []
     hosts.append(host_details)
-    return htmlmin.minify(render_template("hosts/single.html",
-                                          host_name=host_details["name"],
-                                          hosts=hosts),
-                          remove_optional_attribute_quotes=False)
+    return render_template("hosts/single.html",
+                           host_name=host_details["name"],
+                           hosts=hosts)
 
 @app.route("/hosts/all")
 def get_hosts_all():
@@ -307,8 +297,7 @@ def get_hosts_all():
     if not hosts:
         return redirect(url_for("get_hosts"))
 
-    return htmlmin.minify(render_template("hosts/all.html", hosts=hosts),
-                          remove_optional_attribute_quotes=False)
+    return render_template("hosts/all.html", hosts=hosts)
 
 #endregion
 
@@ -328,9 +317,7 @@ def get_panelists():
     if not panelist_list:
         return redirect(url_for("index"))
 
-    return htmlmin.minify(render_template("panelists/panelists.html",
-                                          panelists=panelist_list),
-                          remove_optional_attribute_quotes=False)
+    return render_template("panelists/panelists.html", panelists=panelist_list)
 
 @app.route("/panelists/<string:panelist>")
 def get_panelist_details(panelist: Text):
@@ -350,10 +337,9 @@ def get_panelist_details(panelist: Text):
     # Template expects a list of panelists(s)
     panelists = []
     panelists.append(panelist_details)
-    return htmlmin.minify(render_template("panelists/single.html",
-                                          panelist_name=panelist_details["name"],
-                                          panelists=panelists),
-                          remove_optional_attribute_quotes=False)
+    return render_template("panelists/single.html",
+                           panelist_name=panelist_details["name"],
+                           panelists=panelists)
 
 @app.route("/panelists/all")
 def get_panelists_all():
@@ -364,9 +350,7 @@ def get_panelists_all():
     if not panelists:
         return redirect(url_for("get_panelists"))
 
-    return htmlmin.minify(render_template("panelists/all.html",
-                                          panelists=panelists),
-                          remove_optional_attribute_quotes=False)
+    return render_template("panelists/all.html", panelists=panelists)
 
 #endregion
 
@@ -385,9 +369,8 @@ def get_scorekeepers():
     if not scorekeepers_list:
         return redirect(url_for("index"))
 
-    return htmlmin.minify(render_template("scorekeepers/scorekeepers.html",
-                                          scorekeepers=scorekeepers_list),
-                          remove_optional_attribute_quotes=False)
+    return render_template("scorekeepers/scorekeepers.html",
+                           scorekeepers=scorekeepers_list)
 
 @app.route("/scorekeepers/<string:scorekeeper>")
 def get_scorekeeper_details(scorekeeper: Text):
@@ -407,10 +390,9 @@ def get_scorekeeper_details(scorekeeper: Text):
     # Template expects a list of scorekeepers(s)
     scorekeepers = []
     scorekeepers.append(scorekeeper_details)
-    return htmlmin.minify(render_template("scorekeepers/single.html",
-                                          scorekeeper_name=scorekeeper_details["name"],
-                                          scorekeepers=scorekeepers),
-                          remove_optional_attribute_quotes=False)
+    return render_template("scorekeepers/single.html",
+                           scorekeeper_name=scorekeeper_details["name"],
+                           scorekeepers=scorekeepers)
 
 @app.route("/scorekeepers/all")
 def get_scorekeepers_all():
@@ -420,9 +402,7 @@ def get_scorekeepers_all():
     if not scorekeepers:
         return redirect(url_for("get_scorekeepers"))
 
-    return htmlmin.minify(render_template("scorekeepers/all.html",
-                                          scorekeepers=scorekeepers),
-                          remove_optional_attribute_quotes=False)
+    return render_template("scorekeepers/all.html", scorekeepers=scorekeepers)
 
 #endregion
 
@@ -442,9 +422,7 @@ def get_shows():
     if not show_years:
         return redirect(url_for("index"))
 
-    return htmlmin.minify(render_template("shows/shows.html",
-                                          show_years=show_years),
-                          remove_optional_attribute_quotes=False)
+    return render_template("shows/shows.html", show_years=show_years)
 
 @app.route("/shows/<int:year>")
 def get_shows_year(year: int):
@@ -462,10 +440,9 @@ def get_shows_year(year: int):
         for month in show_months:
             months.append(date(year=year, month=month, day=1))
 
-        return htmlmin.minify(render_template("shows/year.html",
-                                              year=date_year,
-                                              show_months=months),
-                              remove_optional_attribute_quotes=False)
+        return render_template("shows/year.html",
+                               year=date_year,
+                               show_months=months)
     except ValueError:
         return redirect(url_for("get_shows"))
 
@@ -495,10 +472,9 @@ def get_shows_year_month(year: int, month: int):
         if not show_list:
             return redirect(url_for("get_shows_year", year=year))
 
-        return htmlmin.minify(render_template("shows/year_month.html",
-                                              year_month=year_month,
-                                              shows=show_list),
-                              remove_optional_attribute_quotes=False)
+        return render_template("shows/year_month.html",
+                               year_month=year_month,
+                               shows=show_list)
     except ValueError:
         return redirect(url_for("get_shows_year", year=year))
 
@@ -520,10 +496,9 @@ def get_show_year_month_day(year: int, month: int, day: int):
         # Template expects a list of show(s)
         show_list = []
         show_list.append(details)
-        return htmlmin.minify(render_template("shows/single.html",
-                                              show_date=show_date,
-                                              shows=show_list),
-                              remove_optional_attribute_quotes=False)
+        return render_template("shows/single.html",
+                               show_date=show_date,
+                               shows=show_list)
     except ValueError:
         return redirect(url_for("get_shows"))
 
@@ -536,10 +511,9 @@ def get_shows_year_all(year: int):
     if not shows_list:
         return redirect(url_for("get_shows_year", year=year))
 
-    return htmlmin.minify(render_template("shows/year_all.html",
-                                          year=year,
-                                          shows=shows_list),
-                          remove_optional_attribute_quotes=False)
+    return render_template("shows/year_all.html",
+                           year=year,
+                           shows=shows_list)
 
 @app.route("/shows/all")
 def get_shows_all():
@@ -556,10 +530,9 @@ def get_shows_all():
                                                  database_connection=database_connection)
         show_by_years[year] = shows
 
-    return htmlmin.minify(render_template("shows/all.html",
-                                          show_years=show_years,
-                                          shows=show_by_years),
-                          remove_optional_attribute_quotes=False)
+    return render_template("shows/all.html",
+                           show_years=show_years,
+                           shows=show_by_years)
 
 @app.route("/shows/recent")
 def get_shows_recent():
