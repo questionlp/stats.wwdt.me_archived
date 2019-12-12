@@ -11,6 +11,7 @@
     "settings": {
         "api_url": "",
         "blog_url": "",
+        "graphs_url": "",
         "ga_property_code": null,
         "reports_url": "",
         "site_url": ""

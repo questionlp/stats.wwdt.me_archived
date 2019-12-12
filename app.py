@@ -20,7 +20,7 @@ from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Global Constants
-APP_VERSION = "4.1.5"
+APP_VERSION = "4.1.6"
 
 #endregion
 
@@ -615,6 +615,7 @@ app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
 
 app.jinja_env.globals["api_url"] = config["settings"]["api_url"]
 app.jinja_env.globals["blog_url"] = config["settings"]["blog_url"]
+app.jinja_env.globals["graphs_url"] = config["settings"]["graphs_url"]
 app.jinja_env.globals["reports_url"] = config["settings"]["reports_url"]
 app.jinja_env.globals["site_url"] = config["settings"]["site_url"]
 
