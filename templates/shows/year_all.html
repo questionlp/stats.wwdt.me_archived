@@ -3,6 +3,7 @@
 
 {% block content %}
 <div class="page-breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a> &gt;
     <a href="{{ url_for('get_shows') }}">Shows</a> &gt;
     <a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a>
 </div>
