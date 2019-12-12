@@ -612,7 +612,13 @@ app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
 app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
+
+app.jinja_env.globals["api_url"] = config["settings"]["api_url"]
+app.jinja_env.globals["blog_url"] = config["settings"]["blog_url"]
+app.jinja_env.globals["reports_url"] = config["settings"]["reports_url"]
 app.jinja_env.globals["site_url"] = config["settings"]["site_url"]
+app.jinja_env.globals["stats_url"] = config["settings"]["stats_url"]
+
 database_connection = mysql.connector.connect(**config["database"])
 database_connection.autocommit = True
 
