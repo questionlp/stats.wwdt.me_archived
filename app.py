@@ -176,27 +176,58 @@ def site_history():
 @app.route("/sitemap.xml")
 def sitemap_xml():
     """Default Sitemap XML"""
-    site_url = config["settings"]["site_url"]
     show_years = retrieve_show_years(reverse_order=False)
-    sitemap = render_template("core/sitemap.xml",
-                              site_url=site_url,
+    sitemap = render_template("sitemaps/sitemap.xml",
                               show_years=show_years)
+    return Response(sitemap, mimetype="text/xml")
+
+@app.route("/sitemap-guests.xml")
+def sitemap_guest_xml():
+    """Supplementary Sitemap XML for Guest Pages"""
+    database_connection.reconnect()
+    guests = ww_guest.info.retrieve_all(database_connection)
+    sitemap = render_template("sitemaps/guests.xml",
+                              guests=guests)
+    return Response(sitemap, mimetype="text/xml")
+
+@app.route("/sitemap-hosts.xml")
+def sitemap_host_xml():
+    """Supplementary Sitemap XML for Host Pages"""
+    database_connection.reconnect()
+    hosts = ww_host.info.retrieve_all(database_connection)
+    sitemap = render_template("sitemaps/hosts.xml",
+                              hosts=hosts)
+    return Response(sitemap, mimetype="text/xml")
+
+@app.route("/sitemap-panelists.xml")
+def sitemap_panelist_xml():
+    """Supplementary Sitemap XML for Panelist Pages"""
+    database_connection.reconnect()
+    panelists = ww_panelist.info.retrieve_all(database_connection)
+    sitemap = render_template("sitemaps/panelists.xml",
+                              panelists=panelists)
+    return Response(sitemap, mimetype="text/xml")
+
+@app.route("/sitemap-scorekeepers.xml")
+def sitemap_scorekeeper_xml():
+    """Supplementary Sitemap XML for Scorekeeper Pages"""
+    database_connection.reconnect()
+    scorekeepers = ww_scorekeeper.info.retrieve_all(database_connection)
+    sitemap = render_template("sitemaps/scorekeepers.xml",
+                              scorekeepers=scorekeepers)
     return Response(sitemap, mimetype="text/xml")
 
 @app.route("/sitemap-shows.xml")
 def sitemap_shows_xml():
     """Supplementary Sitemap XML for Show Pages"""
-    site_url = config["settings"]["site_url"]
     show_dates = retrieve_show_dates(reverse_order=False)
     show_years_months = retrieve_show_years_months(reverse_order=False)
-    sitemap = render_template("core/sitemap-shows.xml",
-                              site_url=site_url,
+    sitemap = render_template("sitemaps/sitemap-shows.xml",
                               show_dates=show_dates,
                               show_years_months=show_years_months)
     return Response(sitemap, mimetype="text/xml")
 
 #endregion
-
 
 #region Guest Routes
 @app.route("/guest")
@@ -581,6 +612,7 @@ app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
 app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
+app.jinja_env.globals["site_url"] = config["settings"]["site_url"]
 database_connection = mysql.connector.connect(**config["database"])
 database_connection.autocommit = True
 
