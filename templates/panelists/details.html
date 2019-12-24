@@ -92,6 +92,22 @@
 
 <div class="row">
     <div class="col s12">
+        <div class="label">Available Graphs</div>
+    </div>
+    <div class="col s12 m6">
+        <a href="{{ graphs_url }}/panelists/score-breakdown/{{ panelist.slug }}">
+            Score Breakdown
+        </a>
+    </div>
+    <div class="col s12 m6">
+        <a href="{{ graphs_url }}/panelists/scores-by-appearance/{{ panelist.slug }}">
+            Scores by Appearance
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col s12">
         <div class="panelist-appearance-list">
             <div class="label">List of Appearances</div>
             {% if panelist.appearances.shows %}
