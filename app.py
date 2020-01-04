@@ -20,7 +20,7 @@ from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 
 #region Global Constants
-APP_VERSION = "4.1.7"
+APP_VERSION = "4.1.8"
 
 #endregion
 
@@ -51,6 +51,11 @@ def generate_date_time_stamp(time_zone: pytz.timezone = pytz.timezone("UTC")):
     """Generate a current date/timestamp string"""
     now = datetime.now(time_zone)
     return now.strftime("%Y-%m-%d %H:%M:%S %Z")
+
+def current_year(time_zone: pytz.timezone = pytz.timezone("UTC")):
+    """Return the current year"""
+    now = datetime.now(time_zone)
+    return now.strftime("%Y")
 
 def retrieve_show_dates(reverse_order: bool = False):
     """Retrieve a list of available show dates"""
@@ -612,6 +617,7 @@ app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
 app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
+app.jinja_env.globals["current_year"] = current_year
 
 app.jinja_env.globals["api_url"] = config["settings"]["api_url"]
 app.jinja_env.globals["blog_url"] = config["settings"]["blog_url"]
