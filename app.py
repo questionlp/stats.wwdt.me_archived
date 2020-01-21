@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2018-2019 Linh Pham
+# Copyright (c) 2018-2020 Linh Pham
 # stats.wwdt.me is relased under the terms of the Apache License 2.0
 """Flask application startup file"""
 
