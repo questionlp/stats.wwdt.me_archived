@@ -18,9 +18,10 @@ from slugify import slugify
 from werkzeug.exceptions import HTTPException
 from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
+from stats import dicts
 
 #region Global Constants
-APP_VERSION = "4.1.8"
+APP_VERSION = "4.2.0"
 
 #endregion
 
@@ -99,18 +100,6 @@ def date_string_to_date(**kwargs):
 #endregion
 
 #region Filters
-@app.template_filter("rankify")
-def panelist_rank_format(rank: Text):
-    """Convert panelist ranking shorthand into full rank name"""
-    rank_label = {
-        "1": "First",
-        "1t": "First Tied",
-        "2": "Second",
-        "2t": "Second Tied",
-        "3": "Third"
-    }
-    return rank_label[rank]
-
 @app.template_filter("pretty_jsonify")
 def pretty_jsonify(data):
     """Returns a prettier JSON output for an object than Flask's default
@@ -618,6 +607,7 @@ app.jinja_env.globals["date_string_to_date"] = date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
 app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
 app.jinja_env.globals["current_year"] = current_year
+app.jinja_env.globals["rank_map"] = dicts.PANELIST_RANKS
 
 app.jinja_env.globals["api_url"] = config["settings"]["api_url"]
 app.jinja_env.globals["blog_url"] = config["settings"]["blog_url"]
