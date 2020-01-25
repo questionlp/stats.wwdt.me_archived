@@ -123,7 +123,7 @@
                     {% if appearance.score != None %}
                         {{ appearance.score }}
                         {% if appearance.rank %}
-                            ({{ appearance.rank|rankify }})
+                            ({{ rank_map[appearance.rank] }})
                         {% endif %}
                     {% endif %}
                     {% if appearance.best_of %}

@@ -75,7 +75,7 @@
             <ul class="panelist-list">
             {% for panelist in show.panelists %}
                 <li>
-                    {{ "%s:"|format(panelist.rank|rankify) if panelist.rank }}
+                    {{ "%s:"|format(rank_map[panelist.rank]) if panelist.rank }}
                     {% if panelist.score %}
                         <a href="{{ url_for('get_panelist_details',
                                             panelist=panelist.slug) }}">{{ panelist.name }}</a> {{ panelist.score }}
