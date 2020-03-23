@@ -21,7 +21,7 @@ from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
 from stats import dicts
 
 #region Global Constants
-APP_VERSION = "4.2.1"
+APP_VERSION = "4.2.1.1"
 
 #endregion
 
