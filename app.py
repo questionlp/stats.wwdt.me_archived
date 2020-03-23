@@ -216,7 +216,7 @@ def sitemap_shows_xml():
     """Supplementary Sitemap XML for Show Pages"""
     show_dates = retrieve_show_dates(reverse_order=False)
     show_years_months = retrieve_show_years_months(reverse_order=False)
-    sitemap = render_template("sitemaps/sitemap-shows.xml",
+    sitemap = render_template("sitemaps/shows.xml",
                               show_dates=show_dates,
                               show_years_months=show_years_months)
     return Response(sitemap, mimetype="text/xml")
