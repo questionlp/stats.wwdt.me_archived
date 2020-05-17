@@ -3,8 +3,13 @@
 
 {% block content %}
 <div class="page-breadcrumb">
-    <a href="{{ url_for('index') }}">Home</a> &gt;
-    <a href="{{ url_for('get_guests') }}">Guests</a>
+    <ul>
+        <li>
+            <a href="{{ url_for('get_guests') }}">Guests</a>
+        </li>
+        <li>
+            {{ guest_name }}
+        </li>
 </div>
 
 <h1>Guest Details</h1>
