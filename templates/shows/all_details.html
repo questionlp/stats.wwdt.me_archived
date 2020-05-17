@@ -60,11 +60,13 @@
             {% if show.scorekeeper.description %}
             <q class="scorekeeper-description">{{ show.scorekeeper.description }}</q><br>
             {% endif %}
+            <div>
             {% if show.scorekeeper.guest %}
             Guest:
             {% endif %}
             <a href="{{ url_for('get_scorekeeper_details',
                                 scorekeeper=show.scorekeeper.slug) }}">{{ show.scorekeeper.name }}</a>
+            </div>
         {% else %}
             <span class="data-tbd">TBD</span>
         {% endif %}
