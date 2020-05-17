@@ -17,7 +17,11 @@
     .container { max-width: initial; width: 95%; }
     .dropdown-content { border: 2px solid rgba(0, 0, 0, 0.1); }
     .dropdown-content li>a, .dropdown-content li>span { color: initial; }
-    .page-breadcrumb { margin: 1rem 0; }
+    .page-breadcrumb { background-color: rgba(96, 96, 96, 0.05); margin: 1.25rem 0; padding: 0.25rem 1rem; }
+    .page-breadcrumb ul { list-style: none; padding: 0; }
+    .page-breadcrumb ul li { display: inline; padding: 0; }
+    .page-breadcrumb ul li:first-child { padding: 0 0.5rem 0 0; }
+    .page-breadcrumb ul li:not(:last-child)::after { content: ">"; margin: 0 0.75rem;  }
     .sidenav .divider { margin: 1rem 0; }
     .sidenav ul#sidenav-show-years { margin-left: 1rem; }
     .sidenav li>a { font-size: initial; font-weight: initial; }
@@ -39,7 +43,7 @@
     .guest-show-repeat>a, .host-show-repeat>a, .panelist-show-repeat>a, .scorekeeper-show-repeat>a { border-bottom: none !important; }
     .host-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
     .materialboxed { margin: 0 auto; }
-    q.scorekeeper-description { font-style: italic; }
+    q.scorekeeper-description { display: inline-block; font-style: italic; }
     ul.show-all-years { list-style: none; column-count: 4;}
     .show-description, .show-notes { white-space: pre-line; }
     .show-repeat>a { border-bottom: none !important; }
@@ -51,6 +55,7 @@
 
 @media (prefers-color-scheme: light) {
     html, button, input, select, textarea { background-color: initial; color: initial; }
+    .page-breadcrumb { background-color: rgba(160, 160, 160, 0.1); }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -86,18 +91,20 @@
     .collection .collection-item { padding: 1.33rem; }
     nav .brand-logo { font-size: 1.0rem; font-weight: 500; left: 45%; transform: translateX(-40%); }
     .col.s12 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
+    .page-breadcrumb { font-size: 110%; line-height: 2.5rem;}
     .guest-block, .host-block, .scorekeeper-block, .show-block { border-left: 2px solid; }
     .row.show-badges { margin-bottom: 0; }
-    ul.panelist-list, ul.guest-list { line-height: 2; }
+    q.scorekeeper-description, ul.host-list li, ul.panelist-list li, ul.guest-list li, ul.scorekeeper-list li { padding-bottom: 1rem; }
     .database-id, .show-bestof, .scorekeeper-emeritus, .show-repeat, .show-nprlink { display: inline-flex; margin-bottom: 0.5rem; }
     .footer-copyright span.right { display: block; float: initial !important; }
+    ul.footer-nav-links { line-height: 2.5rem; }
 }
 
 @media only print {
-    html { margin: 1rem; }
-    nav, div.sidenav, .show-nprlink { display: none; visibility: hidden; }
+    *, html { background-color: initial; color: black !important; margin: 1rem; }
+    nav, div.sidenav, .show-nprlink, .page-breadcrumb { display: none; visibility: hidden; }
     div.label, div.show-block { border: none; }
-    div.show-block { margin-left: 1.5rem; }
+    div.show-block { margin-left: 0; }
     div.row.show-badges { margin-bottom: 1rem; }
     .show-bestof, .show-repeat { background-color: initial; color: initial; padding: initial; }
     .show-bestof>a, .show-repeat>a { color: black; }

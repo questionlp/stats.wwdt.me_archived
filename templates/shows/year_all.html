@@ -3,9 +3,20 @@
 
 {% block content %}
 <div class="page-breadcrumb">
-    <a href="{{ url_for('index') }}">Home</a> &gt;
-    <a href="{{ url_for('get_shows') }}">Shows</a> &gt;
-    <a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a>
+    <ul>
+        <li>
+            <a href="{{ url_for('index') }}">Home</a>
+        </li>
+        <li>
+            <a href="{{ url_for('get_shows') }}">Shows</a>
+        </li>
+        <li>
+            <a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a>
+        </li>
+        <li>
+            All
+        </li>
+    </ul>
 </div>
 
 <h1>Show Details: {{ year }}</h1>
