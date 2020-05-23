@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2018-2020 Linh Pham
 # stats.wwdt.me is relased under the terms of the Apache License 2.0
-"""Time Zone Parser functions used by the Stats Page"""
+"""Utility functions used by the Stats Page"""
 
 from datetime import datetime
 from dateutil import parser
