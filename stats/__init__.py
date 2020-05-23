@@ -3,6 +3,6 @@
 # stats.wwdt.me is relased under the terms of the Apache License 2.0
 """Explicitly listing all stats modules"""
 
-from stats import dicts, shows
+from stats import dicts, shows, utility
 
-__all__ = ["dicts", "shows"]
+__all__ = ["dicts", "shows", "utility"]

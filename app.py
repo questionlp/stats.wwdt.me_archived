@@ -18,7 +18,7 @@ from slugify import slugify
 from werkzeug.exceptions import HTTPException
 from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
-from stats import dicts
+from stats import dicts, utility
 from stats.shows import on_this_day
 
 #region Global Constants
@@ -46,21 +46,10 @@ def load_config():
 
     if "time_zone" in config_dict["settings"] and config_dict["settings"]["time_zone"]:
         time_zone = config_dict["settings"]["time_zone"]
-        try:
-            app_time_zone = pytz.timezone(time_zone)
-            time_zone_name = app_time_zone.zone
+        app_time_zone, time_zone_name = utility.time_zone_parser(time_zone)
 
-            config_dict["settings"]["app_time_zone"] = app_time_zone
-            config_dict["settings"]["time_zone"] = time_zone_name
-        except pytz.UnknownTimeZoneError:
-            app_logger.error("Unknown time zone in config.json. Defaulting to UTC.")
-            config_dict["settings"]["app_time_zone"] = pytz.timezone("UTC")
-            config_dict["settings"]["time_zone"] = "UTC"
-        except Exception:
-            app_logger.error("Invalid time_zone value in settings configuration key. "
-                             "Defaulting to UTC.")
-            config_dict["settings"]["app_time_zone"] = pytz.timezone("UTC")
-            config_dict["settings"]["time_zone"] = "UTC"
+        config_dict["settings"]["app_time_zone"] = app_time_zone
+        config_dict["settings"]["time_zone"] = time_zone_name
     else:
         config_dict["settings"]["app_time_zone"] = pytz.timezone("UTC")
         config_dict["settings"]["time_zone"] = "UTC"
