@@ -15,8 +15,8 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-            Copyright &copy; 2007&ndash;{{ current_year() }} <a href="http://linhpham.org/">Linh Pham</a>. All rights reserved.
-            <span class="right">R: {{ rendered_at() }} | V: {{ app_version }}</span>
+            Copyright &copy; 2007&ndash;{{ current_year(time_zone) }} <a href="http://linhpham.org/">Linh Pham</a>. All rights reserved.
+            <span class="right">R: {{ rendered_at(time_zone) }} | V: {{ app_version }}</span>
         </div>
     </div>
 </footer>
