@@ -14,6 +14,7 @@
         "graphs_url": "",
         "ga_property_code": null,
         "reports_url": "",
-        "site_url": ""
+        "site_url": "",
+        "time_zone": "UTC"
     }
 }

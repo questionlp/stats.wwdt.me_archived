@@ -19,9 +19,10 @@ from werkzeug.exceptions import HTTPException
 from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 from stats import dicts
+from stats.shows import on_this_day
 
 #region Global Constants
-APP_VERSION = "4.2.5"
+APP_VERSION = "4.3.0"
 
 #endregion
 
@@ -42,6 +43,27 @@ def load_config():
     """Load configuration settings from config.json"""
     with open("config.json", "r") as config_file:
         config_dict = json.load(config_file)
+
+    if "time_zone" in config_dict["settings"] and config_dict["settings"]["time_zone"]:
+        time_zone = config_dict["settings"]["time_zone"]
+        try:
+            app_time_zone = pytz.timezone(time_zone)
+            time_zone_name = app_time_zone.zone
+
+            config_dict["settings"]["app_time_zone"] = app_time_zone
+            config_dict["settings"]["time_zone"] = time_zone_name
+        except pytz.UnknownTimeZoneError:
+            app_logger.error("Unknown time zone in config.json. Defaulting to UTC.")
+            config_dict["settings"]["app_time_zone"] = pytz.timezone("UTC")
+            config_dict["settings"]["time_zone"] = "UTC"
+        except Exception:
+            app_logger.error("Invalid time_zone value in settings configuration key. "
+                             "Defaulting to UTC.")
+            config_dict["settings"]["app_time_zone"] = pytz.timezone("UTC")
+            config_dict["settings"]["time_zone"] = "UTC"
+    else:
+        config_dict["settings"]["app_time_zone"] = pytz.timezone("UTC")
+        config_dict["settings"]["time_zone"] = "UTC"
 
     return config_dict
 
@@ -559,6 +581,23 @@ def get_shows_all():
                            show_years=show_years,
                            shows=show_by_years)
 
+@app.route("/shows/on-this-day")
+def get_shows_on_this_day():
+    """Presents details for shows that have aired on this day"""
+    database_connection.reconnect()
+    show_ids = on_this_day.retrieve_on_this_day_show_ids(database_connection)
+
+    show_list = []
+    for show_id in show_ids:
+        show = ww_show.details.retrieve_by_id(show_id=show_id,
+                                              database_connection=database_connection)
+
+        if show:
+            show_list.append(show)
+
+    return render_template("shows/on_this_day.html",
+                           shows=show_list)
+
 @app.route("/shows/recent")
 def get_shows_recent():
     """Redirects /shows/recent to / as the index page presents a list
@@ -605,9 +644,10 @@ app.jinja_env.globals["app_version"] = APP_VERSION
 app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
-app.jinja_env.globals["rendered_at"] = generate_date_time_stamp
-app.jinja_env.globals["current_year"] = current_year
+app.jinja_env.globals["current_year"] = current_year(config["settings"]["app_time_zone"])
 app.jinja_env.globals["rank_map"] = dicts.PANELIST_RANKS
+app.jinja_env.globals["time_zone"] = config["settings"]["app_time_zone"]
+app.jinja_env.globals["rendered_at"] = generate_date_time_stamp(config["settings"]["app_time_zone"])
 
 app.jinja_env.globals["api_url"] = config["settings"]["api_url"]
 app.jinja_env.globals["blog_url"] = config["settings"]["blog_url"]
@@ -615,7 +655,8 @@ app.jinja_env.globals["graphs_url"] = config["settings"]["graphs_url"]
 app.jinja_env.globals["reports_url"] = config["settings"]["reports_url"]
 app.jinja_env.globals["site_url"] = config["settings"]["site_url"]
 
-database_connection = mysql.connector.connect(**config["database"])
+database_connection = mysql.connector.connect(**config["database"],
+                                              time_zone=config["settings"]["time_zone"])
 database_connection.autocommit = True
 
 if __name__ == "__main__":
