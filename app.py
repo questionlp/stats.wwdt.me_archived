@@ -615,10 +615,10 @@ app.jinja_env.globals["app_version"] = APP_VERSION
 app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = utility.date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
-app.jinja_env.globals["current_year"] = utility.current_year(app_time_zone)
+app.jinja_env.globals["current_year"] = utility.current_year
 app.jinja_env.globals["rank_map"] = dicts.PANELIST_RANKS
 app.jinja_env.globals["time_zone"] = app_time_zone
-app.jinja_env.globals["rendered_at"] = utility.generate_date_time_stamp(app_time_zone)
+app.jinja_env.globals["rendered_at"] = utility.generate_date_time_stamp
 
 app.jinja_env.globals["api_url"] = config["settings"]["api_url"]
 app.jinja_env.globals["blog_url"] = config["settings"]["blog_url"]
