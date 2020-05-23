@@ -17,4 +17,8 @@
     <changefreq>weekly</changefreq>
   </url>
 {% endfor %}
+  <url>
+    <loc>{{ site_url }}{{ url_for("get_shows_on_this_day")}}</loc>
+    <changefreq>daily</changefreq>
+  </url>
 </urlset>
