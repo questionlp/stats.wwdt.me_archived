@@ -20,7 +20,7 @@
     .page-breadcrumb { background-color: rgba(96, 96, 96, 0.05); margin: 1.25rem 0; padding: 0.25rem 1rem; }
     .page-breadcrumb ul { list-style: none; padding: 0; }
     .page-breadcrumb ul li { display: inline; padding: 0; }
-    .page-breadcrumb ul li:first-child { padding: 0 0.5rem 0 0; }
+    .page-breadcrumb ul li:first-child { padding: 0; }
     .page-breadcrumb ul li:not(:last-child)::after { content: ">"; margin: 0 0.75rem;  }
     .sidenav .divider { margin: 1rem 0; }
     .sidenav ul#sidenav-show-years { margin-left: 1rem; }

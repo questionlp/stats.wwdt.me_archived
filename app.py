@@ -22,7 +22,7 @@ from stats import dicts, utility
 from stats.shows import on_this_day
 
 #region Global Constants
-APP_VERSION = "4.3.0.1"
+APP_VERSION = "4.3.0.2"
 
 #endregion
 
