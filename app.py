@@ -16,13 +16,15 @@ import mysql.connector
 import pytz
 from slugify import slugify
 from werkzeug.exceptions import HTTPException
-from wwdtm import (guest as ww_guest, host as ww_host, panelist as ww_panelist,
+from wwdtm import (guest as ww_guest, host as ww_host,
+                   location as ww_location, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 from stats import dicts, utility
 from stats.shows import on_this_day
+from stats.locations import formatting
 
 #region Global Constants
-APP_VERSION = "4.3.0.2"
+APP_VERSION = "4.4.0"
 
 #endregion
 
@@ -121,11 +123,6 @@ def help_page():
     """Redirecting /help to /"""
     return redirect(url_for("index"))
 
-@app.route("/location")
-def get_location():
-    """Placeholder for future show location view"""
-    return redirect(url_for("index"))
-
 @app.route("/search")
 def search_page():
     """Redirecting /search to /"""
@@ -140,7 +137,9 @@ def index():
     database_connection.reconnect()
     recent_shows = ww_show.details.retrieve_recent(database_connection)
     recent_shows.reverse()
-    return render_template("pages/index.html", shows=recent_shows)
+    return render_template("pages/index.html",
+                           shows=recent_shows,
+                           format_location_name=formatting.format_location_name)
 
 #endregion
 
@@ -182,6 +181,16 @@ def sitemap_host_xml():
     hosts = ww_host.info.retrieve_all(database_connection)
     sitemap = render_template("sitemaps/hosts.xml",
                               hosts=hosts)
+    return Response(sitemap, mimetype="text/xml")
+
+@app.route("/sitemap-locations.xml")
+def sitemap_location_xml():
+    """Supplementary Sitemap XML for Location Pages"""
+    database_connection.reconnect()
+    locations = ww_location.info.retrieve_all(database_connection,
+                                              sort_by_venue=True)
+    sitemap = render_template("sitemaps/locations.xml",
+                              locations=locations)
     return Response(sitemap, mimetype="text/xml")
 
 @app.route("/sitemap-panelists.xml")
@@ -314,6 +323,72 @@ def get_hosts_all():
         return redirect(url_for("get_hosts"))
 
     return render_template("hosts/all.html", hosts=hosts)
+
+#endregion
+
+
+#region Location Routes
+@app.route("/location")
+def get_location():
+    """Redirect /location to /locations"""
+    return redirect(url_for("get_locations"), code=301)
+
+@app.route("/locations")
+def get_locations():
+    """Presents a list of locations"""
+    database_connection.reconnect()
+    location_list = ww_location.info.retrieve_all(database_connection,
+                                                  sort_by_venue=True)
+
+    if not location_list:
+        return redirect(url_for("index"))
+
+    return render_template("locations/locations.html",
+                           locations=location_list,
+                           format_location_name=formatting.format_location_name)
+
+@app.route("/locations/<string:location>")
+def get_location_details(location: Text):
+    """Presents location details and recordings for a location"""
+    database_connection.reconnect()
+    location_slug = slugify(location)
+    if location and location != location_slug:
+        return redirect(url_for("get_location_details",
+                                location=location_slug))
+
+    location_details = ww_location.details.retrieve_recordings_by_slug(location_slug,
+                                                                       database_connection)
+
+    if not location_details:
+        return redirect(url_for("get_locations"))
+
+    # Redirect back to /locations for certain placeholder locations
+    if "id" in location_details and (location_details["id"] == 3 or
+                                     location_details["id"] == 38):
+        return redirect(url_for("get_locations"))
+
+    # Template expects a list of location(s)
+    locations = []
+    locations.append(location_details)
+    location_name = formatting.format_location_name(location_details)
+    return render_template("locations/single.html",
+                           locations=locations,
+                           location_name=location_name,
+                           format_location_name=formatting.format_location_name)
+
+@app.route("/locations/all")
+def get_locations_all():
+    """Presents location details and recordings for all locations"""
+    database_connection.reconnect()
+    locations = ww_location.details.retrieve_all_recordings(database_connection,
+                                                            sort_by_venue=True)
+
+    if not locations:
+        return redirect(url_for("get_locations"))
+
+    return render_template("locations/all.html",
+                           locations=locations,
+                           format_location_name=formatting.format_location_name)
 
 #endregion
 
@@ -490,7 +565,8 @@ def get_shows_year_month(year: int, month: int):
 
         return render_template("shows/year_month.html",
                                year_month=year_month,
-                               shows=show_list)
+                               shows=show_list,
+                               format_location_name=formatting.format_location_name)
     except ValueError:
         return redirect(url_for("get_shows_year", year=year))
 
@@ -514,7 +590,8 @@ def get_show_year_month_day(year: int, month: int, day: int):
         show_list.append(details)
         return render_template("shows/single.html",
                                show_date=show_date,
-                               shows=show_list)
+                               shows=show_list,
+                               format_location_name=formatting.format_location_name)
     except ValueError:
         return redirect(url_for("get_shows"))
 
@@ -529,7 +606,8 @@ def get_shows_year_all(year: int):
 
     return render_template("shows/year_all.html",
                            year=year,
-                           shows=shows_list)
+                           shows=shows_list,
+                           format_location_name=formatting.format_location_name)
 
 @app.route("/shows/all")
 def get_shows_all():
@@ -548,7 +626,8 @@ def get_shows_all():
 
     return render_template("shows/all.html",
                            show_years=show_years,
-                           shows=show_by_years)
+                           shows=show_by_years,
+                           format_location_name=formatting.format_location_name)
 
 @app.route("/shows/on-this-day")
 def get_shows_on_this_day():
@@ -565,7 +644,8 @@ def get_shows_on_this_day():
             show_list.append(show)
 
     return render_template("shows/on_this_day.html",
-                           shows=show_list)
+                           shows=show_list,
+                           format_location_name=formatting.format_location_name)
 
 @app.route("/shows/recent")
 def get_shows_recent():

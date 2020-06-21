@@ -27,11 +27,9 @@
 <div class="row">
     <div class="col s12">
         <div class="label">Location</div>
-        {% if show.location.venue %}
-            {{ show.location.venue }}
-            {% if show.location.city and show.location.state %}
-                ({{ show.location.city }}, {{ show.location.state }})
-            {% endif %}
+        {# Only provide a link to non-placeholder locations #}
+        {% if not (show.location.id == 3 or show.location.id == 38) %}
+            <a href="{{ url_for('get_location_details', location=show.location.slug) }}">{{ format_location_name(show.location) }}</a>
         {% else %}
             <span class="data-tbd">TBD</span>
         {% endif %}

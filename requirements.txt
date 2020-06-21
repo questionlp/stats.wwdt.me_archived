@@ -6,4 +6,4 @@ python-slugify==4.0.0
 pytz==2019.3
 us==1.0.0
 uWSGI==2.0.18
-wwdtm>=1.1.7
+wwdtm>=1.2.1.1
