@@ -19,6 +19,7 @@ from werkzeug.exceptions import HTTPException
 from wwdtm import (guest as ww_guest, host as ww_host,
                    location as ww_location, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
+from wwdtm import VERSION as WWDTM_VERSION
 from stats import dicts, utility
 from stats.shows import on_this_day
 from stats.locations import formatting
@@ -692,6 +693,7 @@ config = load_config()
 app_time_zone = config["settings"]["app_time_zone"]
 time_zone_name = config["settings"]["time_zone"]
 app.jinja_env.globals["app_version"] = APP_VERSION
+app.jinja_env.globals["libwwdtm_version"] = WWDTM_VERSION
 app.jinja_env.globals["current_date"] = date.today()
 app.jinja_env.globals["date_string_to_date"] = utility.date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
