@@ -25,8 +25,10 @@ from stats.shows import on_this_day
 from stats.locations import formatting
 
 #region Global Constants
-APP_VERSION = "4.4.0.1"
+APP_VERSION = "4.4.1"
 
+DEFAULT_RECENT_DAYS_AHEAD = 2
+DEFAULT_RECENT_DAYS_BACK = 30
 #endregion
 
 #region Flask App Initialization
@@ -136,8 +138,44 @@ def search_page():
 def index():
     """Default page that includes details for recent shows"""
     database_connection.reconnect()
-    recent_shows = ww_show.details.retrieve_recent(database_connection)
-    recent_shows.reverse()
+
+    try:
+        if "recent_days_ahead" in config["settings"]:
+            days_ahead = int(config["settings"]["recent_days_ahead"])
+        else:
+            days_ahead = DEFAULT_RECENT_DAYS_AHEAD
+    except TypeError:
+        app_logger.warning("Invalid value type in settings.recent_days_ahead. "
+                           "Using default value of %s", DEFAULT_RECENT_DAYS_AHEAD)
+        days_ahead = DEFAULT_RECENT_DAYS_AHEAD
+    except ValueError:
+        app_logger.warning("Invalid value in settings.recent_days_ahead. "
+                           "Using default value of %s", DEFAULT_RECENT_DAYS_AHEAD)
+        days_ahead = DEFAULT_RECENT_DAYS_AHEAD
+
+    try:
+        if "recent_days_back" in config["settings"]:
+            days_back = int(config["settings"]["recent_days_back"])
+        else:
+            days_back = DEFAULT_RECENT_DAYS_BACK
+    except TypeError:
+        app_logger.warning("Invalid value type in settings.recent_days_back. "
+                           "Using default value of %s", DEFAULT_RECENT_DAYS_AHEAD)
+        days_back = DEFAULT_RECENT_DAYS_BACK
+    except ValueError:
+        app_logger.warning("Invalid value in settings.recent_days_back. "
+                           "Using default value of %s", DEFAULT_RECENT_DAYS_AHEAD)
+        days_back = DEFAULT_RECENT_DAYS_BACK
+
+    try:
+        recent_shows = ww_show.details.retrieve_recent(database_connection,
+                                                       include_days_ahead=days_ahead,
+                                                       include_days_back=days_back)
+        recent_shows.reverse()
+    except AttributeError:
+        recent_shows = ww_show.details.retrieve_recent(database_connection)
+        recent_shows.reverse()
+
     return render_template("pages/index.html",
                            shows=recent_shows,
                            format_location_name=formatting.format_location_name)
