@@ -1,9 +1,9 @@
-Flask==1.1.1
-mysql-connector-python==8.0.19
-numpy==1.18.1
+Flask==1.1.2
+mysql-connector-python==8.0.20
+numpy==1.19.0
 python-dateutil==2.8.1
 python-slugify==4.0.0
-pytz==2019.3
+pytz==2020.1
 us==1.0.0
-uWSGI==2.0.18
+uWSGI==2.0.19.1
 wwdtm>=1.2.1.1
