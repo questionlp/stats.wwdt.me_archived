@@ -25,7 +25,7 @@ from stats.shows import on_this_day
 from stats.locations import formatting
 
 #region Global Constants
-APP_VERSION = "4.4.1"
+APP_VERSION = "4.4.2"
 
 DEFAULT_RECENT_DAYS_AHEAD = 2
 DEFAULT_RECENT_DAYS_BACK = 30
@@ -711,7 +711,7 @@ def npr_show_redirect(show_date: Text):
                                    show_day=show_date_object.day,
                                    database_connection=database_connection):
         current_url_prefix = "http://www.npr.org/programs/wait-wait-dont-tell-me/archive?date="
-        legacy_url_prefix = "http://www.npr.org/programs/waitwait/archrndwn"
+        legacy_url_prefix = "http://legacy.npr.org/programs/waitwait/archrndwn"
         legacy_url_suffix = ".waitwait.html"
         if show_date_object >= datetime(year=2006, month=1, day=7):
             show_date_string = show_date_object.strftime("%m-%d-%Y")
