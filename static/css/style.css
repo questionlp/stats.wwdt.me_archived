@@ -3,7 +3,7 @@
     body { display: flex; min-height: 100vh; flex-direction: column; }
     main { flex: 1 0 auto; }
 
-    html, button, input, select, textarea { font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: initial; }
+    html, button, input, select, textarea { background-color: initial; color: initial; font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: initial; }
     code, pre { font-family: "IBM Plex Mono", "Consolas", "Monaco", monospace; }
     main a { color: #3060c0;}
     nav a.sidenav-trigger { display: initial; }
@@ -54,7 +54,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-    html, button, input, select, textarea { background-color: initial; color: initial; }
+    html, button, input, select, textarea { background-color: white !important; color: black !important; }
     .page-breadcrumb { background-color: rgba(160, 160, 160, 0.1); }
 }
 
