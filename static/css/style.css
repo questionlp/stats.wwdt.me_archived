@@ -43,6 +43,7 @@
     .guest-show-repeat>a, .host-show-repeat>a, .location-show-repeat>a, .panelist-show-repeat>a, .scorekeeper-show-repeat>a { border-bottom: none !important; }
     .host-appearance-list>ul, .location-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
     .materialboxed { margin: 0 auto; }
+    .panelist-rank { font-weight: 500; margin-left: 0.25rem; }
     q.scorekeeper-description { display: inline-block; font-style: italic; }
     ul.show-all-years { list-style: none; column-count: 4;}
     .show-description, .show-notes { white-space: pre-line; }
