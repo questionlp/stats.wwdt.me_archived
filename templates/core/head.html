@@ -1,6 +1,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% if site_url and request.path %}
+    <link rel="canonical" href="{{ site_url}}{{ request.path }}">
+    {% endif %}
     
     <!--Import Google Icon and IBM Plex Fonts-->
     <link href="{{ url_for('static', filename='material-icons/material-icons.css') }}" rel="stylesheet">
