@@ -25,7 +25,7 @@ from stats.shows import on_this_day
 from stats.locations import formatting
 
 #region Global Constants
-APP_VERSION = "4.4.5"
+APP_VERSION = "4.5.1"
 
 DEFAULT_RECENT_DAYS_AHEAD = 2
 DEFAULT_RECENT_DAYS_BACK = 30
@@ -117,6 +117,12 @@ def handle_exception(error):
     app_logger.error(error_traceback)
     return render_template("errors/500.html",
                            error_traceback=error_traceback), 500
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handle resource not found conditions"""
+    return render_template("errors/404.html",
+                           error_description=error.description), 404
 
 #endregion
 
