@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2018-2020 Linh Pham
+# Copyright (c) 2018-2021 Linh Pham
 # stats.wwdt.me is relased under the terms of the Apache License 2.0
 """Flask application startup file"""
 
 from collections import OrderedDict
 from datetime import date, datetime
 import json
-from typing import Text
 import traceback
 
 from dateutil import parser
-from flask import Flask, redirect, render_template, Response, url_for
+from flask import current_app, Flask, redirect, render_template, Response, url_for
 from flask.logging import create_logger
 import mysql.connector
 import pytz
@@ -20,12 +19,12 @@ from wwdtm import (guest as ww_guest, host as ww_host,
                    location as ww_location, panelist as ww_panelist,
                    scorekeeper as ww_scorekeeper, show as ww_show)
 from wwdtm import VERSION as WWDTM_VERSION
-from stats import dicts, utility
+from stats import dicts, random, utility
 from stats.shows import on_this_day
 from stats.locations import formatting
 
 #region Global Constants
-APP_VERSION = "4.5.1"
+APP_VERSION = "4.6.0"
 
 DEFAULT_RECENT_DAYS_AHEAD = 2
 DEFAULT_RECENT_DAYS_BACK = 30
@@ -66,6 +65,21 @@ def load_config():
 #endregion
 
 #region Common Functions
+def redirect_url(url: str):
+    """Returns a redirect response for a given URL"""
+
+    # Use a custom response class to force set response headers
+    # and handle the redirect to prevent browsers from caching redirect
+    response = current_app.response_class(response=None,
+                                          status=302,
+                                          mimetype="text/plain")
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = 0
+    response.headers["Location"] = url
+    return response
+
 def retrieve_show_dates(reverse_order: bool = False):
     """Retrieve a list of available show dates"""
     database_connection.reconnect()
@@ -286,7 +300,7 @@ def get_guests():
     return render_template("guests/guests.html", guests=guests_list)
 
 @app.route("/guests/<string:guest>")
-def get_guest_details(guest: Text):
+def get_guest_details(guest: str):
     """Presents appearance details for a Not My Job guest"""
     guest_slug = slugify(guest)
     if guest and guest != guest_slug:
@@ -317,6 +331,16 @@ def get_guests_all():
 
     return render_template("guests/all.html", guests=guests)
 
+@app.route("/guests/random")
+def get_guests_random():
+    """Presents a random guest from the database"""
+    database_connection.reconnect()
+    guest_slug = random.random_guest_slug(database_connection)
+
+    return redirect_url(url_for("get_guest_details",
+                                guest=guest_slug
+                               ))
+
 #endregion
 
 
@@ -338,7 +362,7 @@ def get_hosts():
     return render_template("hosts/hosts.html", hosts=hosts_list)
 
 @app.route("/hosts/<string:host>")
-def get_host_details(host: Text):
+def get_host_details(host: str):
     """Presents appearance details for a show host"""
     database_connection.reconnect()
     host_slug = slugify(host)
@@ -369,6 +393,16 @@ def get_hosts_all():
 
     return render_template("hosts/all.html", hosts=hosts)
 
+@app.route("/hosts/random")
+def get_hosts_random():
+    """Presents a random host from the database"""
+    database_connection.reconnect()
+    host_slug = random.random_host_slug(database_connection)
+
+    return redirect_url(url_for("get_host_details",
+                                host=host_slug
+                               ))
+
 #endregion
 
 
@@ -393,7 +427,7 @@ def get_locations():
                            format_location_name=formatting.format_location_name)
 
 @app.route("/locations/<string:location>")
-def get_location_details(location: Text):
+def get_location_details(location: str):
     """Presents location details and recordings for a location"""
     database_connection.reconnect()
     location_slug = slugify(location)
@@ -435,6 +469,16 @@ def get_locations_all():
                            locations=locations,
                            format_location_name=formatting.format_location_name)
 
+@app.route("/locations/random")
+def get_locations_random():
+    """Presents a random location from the database"""
+    database_connection.reconnect()
+    location_slug = random.random_location_slug(database_connection)
+
+    return redirect_url(url_for("get_location_details",
+                                location=location_slug
+                               ))
+
 #endregion
 
 
@@ -456,7 +500,7 @@ def get_panelists():
     return render_template("panelists/panelists.html", panelists=panelist_list)
 
 @app.route("/panelists/<string:panelist>")
-def get_panelist_details(panelist: Text):
+def get_panelist_details(panelist: str):
     """Presents statistics and appearance details for a panelist"""
     database_connection.reconnect()
     panelist_slug = slugify(panelist)
@@ -488,6 +532,16 @@ def get_panelists_all():
 
     return render_template("panelists/all.html", panelists=panelists)
 
+@app.route("/panelists/random")
+def get_panelists_random():
+    """Presents a random panelist from the database"""
+    database_connection.reconnect()
+    panelist_slug = random.random_panelist_slug(database_connection)
+
+    return redirect_url(url_for("get_panelist_details",
+                                panelist=panelist_slug
+                               ))
+
 #endregion
 
 
@@ -509,7 +563,7 @@ def get_scorekeepers():
                            scorekeepers=scorekeepers_list)
 
 @app.route("/scorekeepers/<string:scorekeeper>")
-def get_scorekeeper_details(scorekeeper: Text):
+def get_scorekeeper_details(scorekeeper: str):
     """Presents appearance details for a scorekeeper"""
     database_connection.reconnect()
     scorekeeper_slug = slugify(scorekeeper)
@@ -539,6 +593,16 @@ def get_scorekeepers_all():
         return redirect(url_for("get_scorekeepers"))
 
     return render_template("scorekeepers/all.html", scorekeepers=scorekeepers)
+
+@app.route("/scorekeepers/random")
+def get_scorekeepers_random():
+    """Presents a random scorekeeper from the database"""
+    database_connection.reconnect()
+    scorekeeper_slug = random.random_scorekeeper_slug(database_connection)
+
+    return redirect_url(url_for("get_scorekeeper_details",
+                                scorekeeper=scorekeeper_slug
+                               ))
 
 #endregion
 
@@ -583,7 +647,7 @@ def get_shows_year(year: int):
         return redirect(url_for("get_shows"))
 
 @app.route("/shows/<string:show_date>")
-def get_shows_date(show_date: Text):
+def get_shows_date(show_date: str):
     """Convert an ISO-like date string into a datetime value and
     redirect the request with the parsed year, month and day"""
     try:
@@ -692,6 +756,22 @@ def get_shows_on_this_day():
                            shows=show_list,
                            format_location_name=formatting.format_location_name)
 
+@app.route("/shows/random")
+def get_shows_random():
+    """Presents a random show from the database"""
+    database_connection.reconnect()
+    show_date = random.random_show_date(database_connection)
+
+    try:
+        parsed_date = parser.parse(show_date)
+        return redirect_url(url_for("get_show_year_month_day",
+                                    year=parsed_date.year,
+                                    month=parsed_date.month,
+                                    day=parsed_date.day,
+                                    ))
+    except ValueError:
+        return redirect(url_for("get_shows"))
+
 @app.route("/shows/recent")
 def get_shows_recent():
     """Redirects /shows/recent to / as the index page presents a list
@@ -703,7 +783,7 @@ def get_shows_recent():
 
 #region NPR Show Redirect Routes
 @app.route("/s/<string:show_date>")
-def npr_show_redirect(show_date: Text):
+def npr_show_redirect(show_date: str):
     """Takes an ISO-like date string and redirects to the appropriate
     show page on NPR's website."""
     database_connection.reconnect()
@@ -734,8 +814,6 @@ def npr_show_redirect(show_date: Text):
 
 #region Application Initialization
 config = load_config()
-app_time_zone = config["settings"]["app_time_zone"]
-time_zone_name = config["settings"]["time_zone"]
 app.jinja_env.globals["app_version"] = APP_VERSION
 app.jinja_env.globals["libwwdtm_version"] = WWDTM_VERSION
 app.jinja_env.globals["current_date"] = date.today()
@@ -743,7 +821,7 @@ app.jinja_env.globals["date_string_to_date"] = utility.date_string_to_date
 app.jinja_env.globals["ga_property_code"] = config["settings"]["ga_property_code"]
 app.jinja_env.globals["current_year"] = utility.current_year
 app.jinja_env.globals["rank_map"] = dicts.PANELIST_RANKS
-app.jinja_env.globals["time_zone"] = app_time_zone
+app.jinja_env.globals["time_zone"] = config["settings"]["app_time_zone"]
 app.jinja_env.globals["rendered_at"] = utility.generate_date_time_stamp
 
 app.jinja_env.globals["api_url"] = config["settings"]["api_url"]

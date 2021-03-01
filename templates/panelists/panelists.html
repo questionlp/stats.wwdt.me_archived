@@ -19,6 +19,10 @@
 </p>
 
 <ul class="collection">
+    <li class="collection-item">
+        <a href="{{ url_for('get_panelists_random') }}">Random
+        <i class="material-icons right">shuffle</i></a>
+    </li>
     {% for panelist in panelists %}
     <li class="collection-item">
         <a href="{{ url_for('get_panelist_details', panelist=panelist.slug) }}">{{ panelist.name }}</a>
