@@ -19,6 +19,10 @@
 </p>
 
 <ul class="collection">
+    <li class="collection-item">
+        <a href="{{ url_for('get_shows_random') }}">Random
+        <i class="material-icons right">shuffle</i></a>
+    </li>
     {% for year in show_years %}
     <li class="collection-item">
         <a href="{{ url_for('get_shows_year', year=year) }}">{{ year }}</a>

@@ -19,6 +19,10 @@
 </p>
 
 <ul class="collection">
+    <li class="collection-item">
+        <a href="{{ url_for('get_guests_random') }}">Random
+        <i class="material-icons right">shuffle</i></a>
+    </li>
     {% for guest in guests %}
     <li class="collection-item">
         <a href="{{ url_for('get_guest_details', guest=guest.slug) }}">{{ guest.name }}</a>
