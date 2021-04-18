@@ -40,6 +40,7 @@
     .guest-block a::after, .host-block a::after, .location-block a::after, .panelist-block a::after, .scorekeeper-block a::after, .show-block a::after { content: " \2192"; }
     .guest-show-bestof, .host-show-bestof, .location-show-bestof, .panelist-show-bestof, .scorekeeper-show-bestof, .show-bestof { background-color: #bbdefb; }
     .guest-show-repeat, .host-show-repeat, .location-show-repeat, .panelist-show-repeat, .scorekeeper-show-repeat, .show-repeat { background-color: #ffe0b2; }
+    .host-guest, .scorekeeper-guest { background-color: #c8e6c9; color: #242f39; font-weight: 500; padding: 0.2rem 0.5rem; margin: 0 0.25rem; }
     .guest-show-repeat>a, .host-show-repeat>a, .location-show-repeat>a, .panelist-show-repeat>a, .scorekeeper-show-repeat>a { border-bottom: none !important; }
     .host-appearance-list>ul, .location-appearance-list>ul, .panelist-appearance-list>ul, .scorekeeper-appearance-list>ul { column-count: 3; column-fill: balance; }
     .materialboxed { margin: 0 auto; }
