@@ -42,6 +42,9 @@
                                         month=show_date.month,
                                         day=show_date.day) }}">
                     {{appearance.date}}</a>
+                    {% if appearance.guest %}
+                        <span class="host-guest">Guest</span>
+                    {% endif %}
                     {% if appearance.best_of %}
                         <span class="host-show-bestof">Best Of</span>
                     {% endif %}
