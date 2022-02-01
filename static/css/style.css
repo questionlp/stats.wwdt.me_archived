@@ -104,10 +104,11 @@
 
 @media only print {
     *, html { background-color: initial; color: black !important; margin: 1rem; }
-    nav, div.sidenav, .show-nprlink, .page-breadcrumb { display: none; visibility: hidden; }
+    a:link { border-bottom: none; }
+    nav, div.sidenav, .show-nprlink, .page-breadcrumb, .footer-nav-links { display: none; visibility: hidden; }
     div.label, div.show-block { border: none; }
     div.show-block { margin-left: 0; }
     div.row.show-badges { margin-bottom: 1rem; }
-    .show-bestof, .show-repeat { background-color: initial; color: initial; padding: initial; }
-    .show-bestof>a, .show-repeat>a { color: black; }
+    .database-id, .show-bestof, .show-repeat { background-color: initial; color: initial; padding: initial; }
+    .database-id>a, .show-bestof>a, .show-repeat>a { color: black; }
 }
