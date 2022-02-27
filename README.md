@@ -1,5 +1,11 @@
 # Wait Wait Don't Tell Me! Stats and Details Site
 
+## Note
+
+This version of the Wait Wait Stats Page has been superceded by version 5.
+The repository for the new version of the Stats Page is available at
+[stats.wwdt.me_v5](https://github.com/questionlp/stats.wwdt.me_v5).
+
 ## Overview
 
 Flask-based web application that serves up statistics and details for the NPR
