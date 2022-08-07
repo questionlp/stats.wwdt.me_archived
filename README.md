@@ -2,9 +2,11 @@
 
 ## Note
 
-This version of the Wait Wait Stats Page has been superceded by version 5.
-The repository for the new version of the Stats Page is available at
-[stats.wwdt.me_v5](https://github.com/questionlp/stats.wwdt.me_v5).
+This version of the Wait Wait Stats Page has been superceded by version 5 and
+is no longer being maintained. As such, this repository is being archived and
+set to be read-only.
+
+The repository for Stats Page Version 5 is available at [stats.wwdt.me_v5](https://github.com/questionlp/stats.wwdt.me_v5).
 
 ## Overview
 
