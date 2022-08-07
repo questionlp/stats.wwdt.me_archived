@@ -6,4 +6,6 @@ python-slugify>=4.0.1
 pytz>=2021.1
 us==1.0.0
 uWSGI>=2.0.19.1
-wwdtm>=1.2.1.5
+
+# libwwdtm
+git+https://github.com/questionlp/libwwdtm@main#egg=wwdtm
